@@ -1,0 +1,26 @@
+language: python
+python:
+  - "3.8"
+
+
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install numpy==1.18.1
+  - pip install coverage codecov
+  - python setup.py install
+
+# command to run tests
+script:
+  - cd examples
+  - coverage run -p example_no_writing.py
+  - coverage run -p example_bit.py
+  - coverage run -p example_str.py
+  - coverage run -p example_img.py
+  - cp .coverage.* ..
+  - cd ..
+
+# Push the results back to codecov
+after_success:
+  - coverage combine
+  - codecov

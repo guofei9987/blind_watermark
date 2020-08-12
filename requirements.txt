@@ -1,0 +1,4 @@
+numpy>=1.17.0
+opencv-python
+setuptools
+PyWavelets
