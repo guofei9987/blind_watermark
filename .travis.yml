@@ -6,7 +6,7 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install numpy 1.18.1
+  - pip install numpy==1.18.1
   - pip install coverage codecov
   - python setup.py install
 
