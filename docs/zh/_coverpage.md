@@ -1,16 +1,11 @@
 <!-- ![logo](_media/pic.jpg) -->
 
-# scikit-opt
+# blind_watermark
 
-> Powerful Python module for Heuristic Algorithms
+> 数字盲水印
 
-* 差分进化算法
-* 遗传算法
-* 粒子群算法
-* 模拟退火算法
-* 蚁群算法
-* 免疫优化算法
-* 鱼群算法
+* 图片水印
+* 比特水印
 
-[GitHub](https://github.com/guofei9987/scikit-opt/)
-[开始](zh/README)
+[GitHub](https://github.com/guofei9987/blind_watermark/)
+[开始](/zh/README)
