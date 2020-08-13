@@ -15,16 +15,8 @@ script:
   - cd examples
   - coverage run -p origin_bit.py
   - coverage run -p origin.py
-  - coverage run -p 多遮挡攻击.py
-  - coverage run -p 亮度调暗攻击.py
-  - coverage run -p 亮度调高攻击.py
-  - coverage run -p 旋转攻击.py
-  - coverage run -p 椒盐攻击.py
-  - coverage run -p 横向裁剪攻击.py
-  - coverage run -p 纵向裁剪攻击.py
-  - coverage run -p 缩放攻击.py
   - cp .coverage.* ..
-  - cd..
+  - cd ..
 
 # Push the results back to codecov
 after_success:
