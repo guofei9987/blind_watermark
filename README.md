@@ -56,20 +56,13 @@ bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_
 
 |原图|水印|
 |--|--|
-|<img src="https://blindwatermark.github.io/blind_watermark/原图.jpg" width = "400" >|![水印](docs/水印.png)|
-
-|嵌入后的图|提取的水印|
-|--|--|
-|<img src="https://blindwatermark.github.io/blind_watermark/打上水印的图.png" width = "400" >|![提取的水印](docs/解出的水印.png)|
-
-
-|原图|水印|
-|--|--|
-|<img src="../原图.jpg" width = "400" >|![水印](../水印.png)|
+|![原图](docs/原图.jpg)|![水印](docs/水印.png)|
 
 |打上水印的图|提取的水印|
 |--|--|
-|<img src="../打上水印的图.jpg" width = "400" >|![提取的水印](../解出的水印.png)|
+|![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
+
+
 
 ### 各种攻击后的效果
 
