@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # 除了嵌入图片，也可以嵌入比特类数据
 import numpy as np
 from blind_watermark import WaterMark

@@ -24,6 +24,7 @@ script:
   - coverage run -p 纵向裁剪攻击.py
   - coverage run -p 缩放攻击.py
   - cp .coverage.* ..
+  - cd..
 
 # Push the results back to codecov
 after_success:

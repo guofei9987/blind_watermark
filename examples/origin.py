@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from blind_watermark import WaterMark
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
