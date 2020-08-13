@@ -76,7 +76,7 @@ bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_
 |横向裁剪50%<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|<img src="https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E6%A8%AA%E5%90%91%E8%A3%81%E5%89%AA%E6%94%BB%E5%87%BB.png?raw=true" width = "200" >|![](https://img1.github.io/blind_watermark/%E6%A8%AA%E5%90%91%E8%A3%81%E5%89%AA%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
 |纵向裁剪10%<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|<img src="https://img1.github.io/blind_watermark/%E7%BA%B5%E5%90%91%E8%A3%81%E5%89%AA%E6%89%93%E5%87%BB_%E5%A1%AB%E8%A1%A5.png?raw=true" width = "400" >|![纵向裁剪](https://img1.github.io/blind_watermark/%E7%BA%B5%E5%90%91%E8%A3%81%E5%89%AA%E6%89%93%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
 |缩放攻击（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|<img src="https://img1.github.io/blind_watermark/%E7%BC%A9%E6%94%BE%E6%94%BB%E5%87%BB.png?raw=true" width = "300" >![]()|![](https://img1.github.io/blind_watermark/%E7%BC%A9%E6%94%BE%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|椒盐攻击<br>[椒盐击.py](examples/椒盐.py)|<img src="https://img1.github.io/blind_watermark/%E6%A4%92%E7%9B%90%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E6%A4%92%E7%9B%90%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
+|椒盐攻击<br>[椒盐攻击.py](examples/椒盐攻击.py)|<img src="https://img1.github.io/blind_watermark/%E6%A4%92%E7%9B%90%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E6%A4%92%E7%9B%90%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
 |亮度提高10%<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|<img src="https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E9%AB%98%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E9%AB%98%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
 |亮度调低10%<br>[亮度调暗攻击.py](examples/亮度调暗攻击.py)|<img src="https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E4%BD%8E%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E4%BD%8E%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
 |旋转攻击45度<br>[旋转攻击.py](examples/旋转攻击.py)|<img src="https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E6%97%8B%E8%BD%AC%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E6%97%8B%E8%BD%AC%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
@@ -109,13 +109,3 @@ print(wm_extract)
 ```
 
 解出的水印是一个0～1之间的实数，方便用户自行卡阈值。如果水印信息量远小于图片可容纳量，偏差极小。
-
--------------
-
-几种隐写术比较：
-
-|方法|示例|埋入信息量|是否有损|鲁棒性|隐蔽性|
-|--|--|--|--|--|--|
-|隐写在频域上||少|有损|很强，抗各种攻击。|很强
-|隐写在空域上||中|无损|弱|强|
-|图种|`copy /b xx.jpg+xx.rar xx.jpg`|理论上无上限|无损|弱|几乎无，像素和文件大小不匹配、扫描内容都可以发现|
