@@ -13,10 +13,6 @@
 
 
 
-Swarm Intelligence in Python  
-(Genetic Algorithm, Particle Swarm Optimization, Simulated Annealing, Ant Colony Algorithm, Immune Algorithm,Artificial Fish Swarm Algorithm in Python)  
-
-
 - **Documentation:** [https://BlindWatermark.github.io/blind_watermark/#/en/](https://blind_watermark.github.io/blind_watermark/#/en/)
 - **文档：** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://blind_watermark.github.io/blind_watermark/#/zh/)  
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)

@@ -12,11 +12,6 @@
 [![Join the chat at https://gitter.im/guofei9987/blind_watermark](https://badges.gitter.im/guofei9987/blind_watermark.svg)](https://gitter.im/guofei9987/blind_watermark?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-
-Swarm Intelligence in Python  
-(Genetic Algorithm, Particle Swarm Optimization, Simulated Annealing, Ant Colony Algorithm, Immune Algorithm,Artificial Fish Swarm Algorithm in Python)  
-
-
 - **Documentation:** [https://BlindWatermark.github.io/blind_watermark/#/en/](https://blind_watermark.github.io/blind_watermark/#/en/)
 - **文档：** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://blind_watermark.github.io/blind_watermark/#/zh/)  
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
@@ -72,14 +67,14 @@ bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_
 
 |攻击方式|攻击后的图片|提取的水印|
 |--|--|--|
-|旋转攻击45度<br>[旋转攻击.py](examples/旋转攻击.py)|<img src="../旋转攻击.jpg" width = "400" >|![](../旋转攻击_提取水印.png)|
-|多遮挡<br>[多遮挡攻击.py](examples/多遮挡攻击.py)| <img src="../多遮挡攻击.jpg" width = "400" > |![多遮挡_提取水印](../多遮挡攻击_提取水印.png)|
-|横向裁剪50%<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|<img src="../横向裁剪攻击.jpg" width = "200" >|![](../横向裁剪攻击_提取水印.png)|
-|纵向裁剪50%<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|<img src="../纵向裁剪攻击.jpg" width = "400" >|![纵向裁剪](../纵向裁剪攻击_提取水印.png)|
-|缩放攻击（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|<img src="../缩放攻击.jpg" width = "400" >|![](../缩放攻击_提取水印.png)|
-|椒盐攻击<br>[椒盐击.py](examples/椒盐攻击.py)|<img src="../椒盐攻击.jpg" width = "400" >|![](../椒盐攻击_提取水印.png)|
-|亮度提高10%<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|<img src="../亮度调高攻击.jpg" width = "400" >|![](../亮度调高攻击_提取水印.png)|
-|亮度调低10%<br>[亮度调暗攻击.py](examples/亮度调低攻击.py)|<img src="../亮度调低攻击.jpg" width = "400" >|![](../亮度调低攻击_提取水印.png)|
+|旋转攻击45度<br>[旋转攻击.py](examples/旋转攻击.py)|<img src="/../旋转攻击.jpg" width = "400" >|![](../旋转攻击_提取水印.png)|
+|多遮挡<br>[多遮挡攻击.py](examples/多遮挡攻击.py)| <img src="/../多遮挡攻击.jpg" width = "400" > |![多遮挡_提取水印](../多遮挡攻击_提取水印.png)|
+|横向裁剪50%<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|<img src="/../横向裁剪攻击.jpg" width = "200" >|![](../横向裁剪攻击_提取水印.png)|
+|纵向裁剪50%<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|<img src="/../纵向裁剪攻击.jpg" width = "400" >|![纵向裁剪](../纵向裁剪攻击_提取水印.png)|
+|缩放攻击（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|<img src="/../缩放攻击.jpg" width = "400" >|![](../缩放攻击_提取水印.png)|
+|椒盐攻击<br>[椒盐击.py](examples/椒盐攻击.py)|<img src="/../椒盐攻击.jpg" width = "400" >|![](../椒盐攻击_提取水印.png)|
+|亮度提高10%<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|<img src="/../亮度调高攻击.jpg" width = "400" >|![](../亮度调高攻击_提取水印.png)|
+|亮度调低10%<br>[亮度调暗攻击.py](examples/亮度调低攻击.py)|<img src="/../亮度调低攻击.jpg" width = "400" >|![](../亮度调低攻击_提取水印.png)|
 
 
 ### 隐水印还可以是二进制数据

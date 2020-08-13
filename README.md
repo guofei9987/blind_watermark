@@ -56,26 +56,22 @@ bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_
 
 |原图|水印|
 |--|--|
-|<img src="https://img1.github.io/blind_watermark/原图.jpg" width = "400" >|![水印](https://img1.github.io/blind_watermark/水印.png)|
+|<img src="https://blindwatermark.github.io/blind_watermark/原图.jpg" width = "400" >|![水印](docs/水印.png)|
 
 |嵌入后的图|提取的水印|
 |--|--|
-|<img src="https://img1.github.io/blind_watermark/打上水印的图.png" width = "400" >|![提取的水印](https://img1.github.io/blind_watermark/%E8%A7%A3%E5%87%BA%E7%9A%84%E6%B0%B4%E5%8D%B0.png)|
+|<img src="https://blindwatermark.github.io/blind_watermark/打上水印的图.png" width = "400" >|![提取的水印](docs/解出的水印.png)|
 
+
+|原图|水印|
+|--|--|
+|<img src="../原图.jpg" width = "400" >|![水印](../水印.png)|
+
+|打上水印的图|提取的水印|
+|--|--|
+|<img src="../打上水印的图.jpg" width = "400" >|![提取的水印](../解出的水印.png)|
 
 ### 各种攻击后的效果
-
-|攻击方式|攻击后的图片|提取的水印|
-|--|--|--|
-|多遮挡<br>[多遮挡攻击.py](examples/多遮挡攻击.py)| <img src="https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E5%A4%9A%E9%81%AE%E6%8C%A1%E6%94%BB%E5%87%BB.png?raw=true" width = "400" > |![多遮挡_提取水印](https://img1.github.io/blind_watermark/%E5%A4%9A%E9%81%AE%E6%8C%A1%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|横向裁剪50%<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|<img src="https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E6%A8%AA%E5%90%91%E8%A3%81%E5%89%AA%E6%94%BB%E5%87%BB.png?raw=true" width = "200" >|![](https://img1.github.io/blind_watermark/%E6%A8%AA%E5%90%91%E8%A3%81%E5%89%AA%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|纵向裁剪10%<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|<img src="https://img1.github.io/blind_watermark/%E7%BA%B5%E5%90%91%E8%A3%81%E5%89%AA%E6%89%93%E5%87%BB_%E5%A1%AB%E8%A1%A5.png?raw=true" width = "400" >|![纵向裁剪](https://img1.github.io/blind_watermark/%E7%BA%B5%E5%90%91%E8%A3%81%E5%89%AA%E6%89%93%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|缩放攻击（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|<img src="https://img1.github.io/blind_watermark/%E7%BC%A9%E6%94%BE%E6%94%BB%E5%87%BB.png?raw=true" width = "300" >|![](https://img1.github.io/blind_watermark/%E7%BC%A9%E6%94%BE%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|椒盐攻击<br>[椒盐攻击.py](examples/椒盐攻击.py)|<img src="https://img1.github.io/blind_watermark/%E6%A4%92%E7%9B%90%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E6%A4%92%E7%9B%90%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|亮度提高10%<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|<img src="https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E9%AB%98%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E9%AB%98%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|亮度调低10%<br>[亮度调暗攻击.py](examples/亮度调低攻击.py)|<img src="https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E4%BD%8E%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://img1.github.io/blind_watermark/%E4%BA%AE%E5%BA%A6%E8%B0%83%E4%BD%8E%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-|旋转攻击45度<br>[旋转攻击.py](examples/旋转攻击.py)|<img src="https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E6%97%8B%E8%BD%AC%E6%94%BB%E5%87%BB.png?raw=true" width = "400" >|![](https://github.com/img1/img1.github.io/blob/master/blind_watermark/%E6%97%8B%E8%BD%AC%E6%94%BB%E5%87%BB_%E6%8F%90%E5%8F%96%E6%B0%B4%E5%8D%B0.png?raw=true)|
-
 
 
 |攻击方式|攻击后的图片|提取的水印|
