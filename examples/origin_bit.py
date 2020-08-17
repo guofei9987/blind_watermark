@@ -7,7 +7,7 @@ from blind_watermark import WaterMark
 bwm1 = WaterMark(password_img=1, password_wm=1)
 
 # 读取原图
-bwm1.read_img('pic/原图.jpg')
+bwm1.read_img('pic/ori_img.jpg')
 
 # 读取水印
 wm = [True, False, True, True, True, False, True, True, False, True]

@@ -1,6 +1,6 @@
 # blind-watermark
 
-Blind watermark based on wavelet transform.
+基于小波变换的数字盲水印  
 
 
 [![PyPI](https://img.shields.io/pypi/v/blind_watermark)](https://pypi.org/project/blind_watermark/)
@@ -15,24 +15,25 @@ Blind watermark based on wavelet transform.
 
 - **Documentation:** [https://BlindWatermark.github.io/blind_watermark/#/en/](https://BlindWatermark.github.io/blind_watermark/#/en/)
 - **文档：** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://BlindWatermark.github.io/blind_watermark/#/zh/)  
+- **English readme** [readme.md](readme.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
 
-# install
+# 安装
 ```bash
 pip install blind-watermark
 ```
 
-For the current developer version:
+或者安装最新开发版本
 ```bach
 git clone git@github.com:guofei9987/blind_watermark.git
 cd blind_watermark
 pip install .
 ```
 
-## How to use
+## 如何使用
 
-How to embed watermark: 
+嵌入水印
 ```python
 from blind_watermark import WaterMark
 
@@ -42,70 +43,70 @@ bwm1.read_img('pic/ori_img.jpg')
 # 读取水印
 bwm1.read_wm('pic/watermark.png')
 # 打上盲水印
-bwm1.embed('output/embedded.png')
+bwm1.embed('output/打上水印的图.png')
 ```
 
 
-How to extract watermark
+提取水印
 ```python
 bwm1 = WaterMark(password_wm=1, password_img=1)
 # 注意需要设定水印的长宽wm_shape
-bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='output/extracted.png', )
+bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_wm_name='output/解出的水印.png', )
 ```
 
-## demos:
+## 效果展示
 
-|origin image|watermark|
+|原图|水印|
 |--|--|
-|![origin_image](docs/原图.jpg)|![watermark](docs/水印.png)|
+|![原图](docs/原图.jpg)|![水印](docs/水印.png)|
 
-|image embedded with watermark|extracted watermark|
+|打上水印的图|提取的水印|
 |--|--|
 |![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
 
 
 
-### Attack on the embedded image
+### 各种攻击后的效果
 
 
-|attack method|image after attack|extracted watermark|
+|攻击方式|攻击后的图片|提取的水印|
 |--|--|--|
-|Rotate 45 Degrees<br>[旋转攻击.py](examples/旋转攻击.py)|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
-|Many Coverage<br>[多遮挡攻击.py](examples/多遮挡攻击.py)| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-|50% Horizontal Crop<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
-|50% Vertical Crop<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
-|Resize（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
-|Pepper Noise<br>[椒盐击.py](examples/椒盐攻击.py)|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
-|Brightness 10% Up<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
-|Brightness 10% Down<br>[亮度调暗攻击.py](examples/亮度调低攻击.py)|![亮度调低攻击](docs/亮度调低攻击.jpg)|![](docs/亮度调低攻击_提取水印.png)|
+|旋转攻击45度<br>[旋转攻击.py](examples/旋转攻击.py)|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
+|多遮挡<br>[多遮挡攻击.py](examples/多遮挡攻击.py)| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
+|横向裁剪50%<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
+|纵向裁剪50%<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
+|缩放攻击（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
+|椒盐攻击<br>[椒盐击.py](examples/椒盐攻击.py)|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
+|亮度提高10%<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
+|亮度调低10%<br>[亮度调暗攻击.py](examples/亮度调低攻击.py)|![亮度调低攻击](docs/亮度调低攻击.jpg)|![](docs/亮度调低攻击_提取水印.png)|
 
 
 
 
-### embed array of bits
+### 隐水印还可以是二进制数据
 
-As demo, we embed 6 bytes data:
+作为 demo， 如果要嵌入是如下长度为6的二进制数据
 ```python
 wm = [True, False, True, True, True, False]
 ```
 
-Embed:
+嵌入水印
+
 ```python
+# 除了嵌入图片，也可以嵌入比特类数据
 from blind_watermark import WaterMark
 
 bwm1 = WaterMark(password_img=1, password_wm=1)
 bwm1.read_ori_img('pic/ori_img.jpg')
 bwm1.read_wm([True, False, True, True, True, False], mode='bit')
-bwm1.embed('output/embedded.png')
+bwm1.embed('output/打上水印的图.png')
 ```
 
-Extract:
+解水印：（注意设定水印形状 `wm_shape`）
 ```python
 bwm1 = WaterMark(password_img=1, password_wm=1, wm_shape=6)
 wm_extract = bwm1.extract('output/打上水印的图.png', mode='bit')
 print(wm_extract)
 ```
-Notice that `wm_shape` (shape of watermark) is necessary
 
-The output `wm_extract` is an array of float. set a threshold such as 0.5.
-
+解出的水印是一个0～1之间的实数，方便用户自行卡阈值。如果水印信息量远小于图片可容纳量，偏差极小。
