@@ -32,16 +32,16 @@ pip install .
 
 ## How to use
 
-How to embed watermark: 
+How to embed watermark:
 ```python
 from blind_watermark import WaterMark
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
-# 读取原图
+# read original image
 bwm1.read_img('pic/ori_img.jpg')
-# 读取水印
+# read watermark
 bwm1.read_wm('pic/watermark.png')
-# 打上盲水印
+# embed
 bwm1.embed('output/embedded.png')
 ```
 
@@ -49,7 +49,7 @@ bwm1.embed('output/embedded.png')
 How to extract watermark
 ```python
 bwm1 = WaterMark(password_wm=1, password_img=1)
-# 注意需要设定水印的长宽wm_shape
+# notice that wm_shape is necessary
 bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='output/extracted.png', )
 ```
 
@@ -57,12 +57,11 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 
 |origin image|watermark|
 |--|--|
-|![origin_image](docs/原图.jpg)|![watermark](docs/水印.png)|
+|![origin_image](https://blindwatermark.github.io/blind_watermark/原图.jpg)|![watermark](https://blindwatermark.github.io/blind_watermark/水印.png)|
 
 |image embedded with watermark|extracted watermark|
 |--|--|
-|![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
-
+|![origin_image](https://blindwatermark.github.io/blind_watermark/打上水印的图.jpg)|![watermark](https://blindwatermark.github.io/blind_watermark/解出的水印.png)|
 
 
 ### Attack on the embedded image
@@ -70,14 +69,14 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 
 |attack method|image after attack|extracted watermark|
 |--|--|--|
-|Rotate 45 Degrees<br>[旋转攻击.py](examples/旋转攻击.py)|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
-|Many Coverage<br>[多遮挡攻击.py](examples/多遮挡攻击.py)| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-|50% Horizontal Crop<br>[横向裁剪攻击.py](examples/横向裁剪攻击.py)|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
-|50% Vertical Crop<br>[纵向裁剪攻击.py](examples/纵向裁剪攻击.py)|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
-|Resize（1200X1920->600X800）<br>[缩放攻击.py](examples/缩放攻击.py)|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
-|Pepper Noise<br>[椒盐击.py](examples/椒盐攻击.py)|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
-|Brightness 10% Up<br>[亮度调高攻击.py](examples/亮度调高攻击.py)|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
-|Brightness 10% Down<br>[亮度调暗攻击.py](examples/亮度调低攻击.py)|![亮度调低攻击](docs/亮度调低攻击.jpg)|![](docs/亮度调低攻击_提取水印.png)|
+|Rotate 45 Degrees<br>[旋转攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/旋转攻击.py)|![旋转攻击](https://blindwatermark.github.io/blind_watermark/旋转攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/旋转攻击_提取水印.png)|
+|Many Coverage<br>[多遮挡攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/多遮挡攻击.py)| ![多遮挡攻击](https://blindwatermark.github.io/blind_watermark/多遮挡攻击.jpg) |![多遮挡_提取水印](https://blindwatermark.github.io/blind_watermark/多遮挡攻击_提取水印.png)|
+|50% Horizontal Crop<br>[横向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/横向裁剪攻击.py)|![横向裁剪攻击](https://blindwatermark.github.io/blind_watermark/横向裁剪攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/横向裁剪攻击_提取水印.png)|
+|50% Vertical Crop<br>[纵向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/纵向裁剪攻击.py)|![纵向裁剪攻击](https://blindwatermark.github.io/blind_watermark/纵向裁剪攻击.jpg)|![纵向裁剪](https://blindwatermark.github.io/blind_watermark/纵向裁剪攻击_提取水印.png)|
+|Resize（1200X1920->600X800）<br>[缩放攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/缩放攻击.py)|![缩放攻击](https://blindwatermark.github.io/blind_watermark/缩放攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/缩放攻击_提取水印.png)|
+|Pepper Noise<br>[椒盐击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/椒盐攻击.py)|![椒盐攻击](https://blindwatermark.github.io/blind_watermark/椒盐攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/椒盐攻击_提取水印.png)|
+|Brightness 10% Up<br>[亮度调高攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调高攻击.py)|![亮度调高攻击](https://blindwatermark.github.io/blind_watermark/亮度调高攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/亮度调高攻击_提取水印.png)|
+|Brightness 10% Down<br>[亮度调暗攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调低攻击.py)|![亮度调低攻击](https://blindwatermark.github.io/blind_watermark/亮度调低攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/亮度调低攻击_提取水印.png)|
 
 
 
@@ -108,4 +107,3 @@ print(wm_extract)
 Notice that `wm_shape` (shape of watermark) is necessary
 
 The output `wm_extract` is an array of float. set a threshold such as 0.5.
-
