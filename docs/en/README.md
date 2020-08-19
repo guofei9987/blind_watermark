@@ -79,7 +79,26 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 |Brightness 10% Down<br>[亮度调暗攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调低攻击.py)|![亮度调低攻击](https://blindwatermark.github.io/blind_watermark/亮度调低攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/亮度调低攻击_提取水印.png)|
 
 
+### embed string
+Embed:
+```python
+from blind_watermark import WaterMark
 
+bwm1 = WaterMark(password_img=1, password_wm=1)
+bwm1.read_img('pic/ori_img.jpg')
+wm = '@guofei9987 开源万岁！'
+bwm1.read_wm(wm, mode='str')
+bwm1.embed('output/embedded.png')
+len_wm = len(bwm1.wm_bit)
+print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
+```
+
+Extract:
+```python
+bwm1 = WaterMark(password_img=1, password_wm=1)
+wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
+print(wm_extract)
+```
 
 ### embed array of bits
 

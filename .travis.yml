@@ -15,6 +15,7 @@ script:
   - cd examples
   - coverage run -p origin_bit.py
   - coverage run -p origin.py
+  - coverage run -p origin_str.py
   - cp .coverage.* ..
   - cd ..
 

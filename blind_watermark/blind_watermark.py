@@ -64,6 +64,9 @@ class WaterMark:
     def read_wm(self, wm_content, mode='img'):
         if mode == 'img':
             self.read_img_wm(filename=wm_content)
+        elif mode == 'str':
+            byte = bin(int(wm_content.encode('utf-8').hex(), base=16))[2:]
+            self.wm_bit = (np.array(list(byte)) == '1')
         else:
             self.wm_bit = np.array(wm_content)
         self.wm_size = self.wm_bit.size
@@ -157,4 +160,7 @@ class WaterMark:
 
         if mode == 'img':
             cv2.imwrite(out_wm_name, 255 * wm.reshape(wm_shape[0], wm_shape[1]))
+        elif mode == 'str':
+            byte = ''.join((np.round(wm)).astype(np.int).astype(np.str))
+            wm = bytes.fromhex(hex(int(byte, base=2))[2:]).decode('utf-8')
         return wm
