@@ -101,6 +101,8 @@ bwm1 = WaterMark(password_img=1, password_wm=1)
 wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
 print(wm_extract)
 ```
+Output:
+>@guofei9987 开源万岁！
 
 ### embed array of bits
 
