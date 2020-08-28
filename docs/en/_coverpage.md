@@ -2,10 +2,11 @@
 
 # blind_watermark
 
-> 数字盲水印
+> Blind Watermark
 
-* 图片水印
-* 比特水印
+* embed a picture
+* embed a string
+* embed byte-file
 
 [GitHub](https://github.com/guofei9987/blind_watermark/)
 [Get Started](/en/README)
