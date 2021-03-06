@@ -1,7 +1,7 @@
 # encoding:utf-8
 
 
-# from blind_watermark import WaterMark
+from blind_watermark import WaterMark
 
 
 def get_value(value_get, str_info):
@@ -160,41 +160,46 @@ def mod_3():
                 break
     return 0
 
-print('''开源代码地址：https://github.com/guofei9987/blind_watermark ，欢迎star
-本程序免费提供使用！
-程序开始运行：
-请注意，本程序需要和其下文件夹配合工作他们分别是:
-    yuantu:放置原图
-    shuiyin；存放水印
-    jiemi存放等待解密文件
-    shuichu输出文件夹
-复制此程序时，请直接打包本程序所在文件夹
 
-请选择程序工作模式：
-    1: 把盲水印嵌入原图
-    2: 水印解密模式（需要输入密码）
-''')
+def batch_embed():
+    pass
 
 
-work_mode = input("请选输入工作模式序号")
-if not work_mode in (1, 2):
-    print('模式选择错误')
-    input("按任意键退出")
-    exit(0)
+def batch_extract():
+    pass
 
+def main():
+    print('''开源代码地址：https://github.com/guofei9987/blind_watermark ，欢迎star
+    本程序免费提供使用！
+    程序功能：
+        功能1: 把盲水印嵌入原图
+        功能2: 水印解密模式（需要输入密码）
+    程序开始运行：
+    请注意，本程序需要和其下文件夹配合工作，他们分别是:
+        /images: 存放待打上盲水印原图（功能1），或者待解出盲水印的图片（功能2）。如果有多张图片，则会批量运行。
+        /watermark：存放水印，只有第一张生效（只在功能1下生效）
+        /res：程序的输出。打上盲水印的图（功能1），或者解出的水印（功能2）
+    复制此程序时，请直接打包本程序所在文件夹
+    
+    请选择程序工作模式：
+        1: 把盲水印嵌入原图
+        2: 水印解密模式（需要输入密码）
+    ''')
 
-if work_mode != 0 and work_mode != 1 and work_mode != 2 and work_mode != 3:
-    print("你输入的工作模式序号不存在")
-if work_mode == 0:
-    print("错误次数过多，已关闭")
-if work_mode == 1:
-    res = 1
-    res = mod_1()
+    work_mode = int(input("请选输入工作模式序号"))
 
-if work_mode == 2:
-    res = 1
-    res = mod_3()
+    if work_mode == 1:
+        batch_embed()
+        print('盲水印已经批量打入，放到了文件夹 /res 下')
+    elif work_mode == 2:
+        batch_extract()
+        print('盲水印已经批量解出，放到了文件夹 /res 下')
 
-input('''程序运行完毕，需要再次使用请重新打开
-按任意键退出
-''')
+    else:
+        print('模式选择错误')
+
+    input('按任意键退出')
+
+if __name__=='__main__':
+    # main()
+    print('本功能正在优化，近期完成（一周内）')
