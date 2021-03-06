@@ -1,11 +1,7 @@
 # encoding:utf-8
 
-from PIL import Image
-import subprocess
-import os
-import shutil
 
-from blind_watermark import WaterMark
+# from blind_watermark import WaterMark
 
 
 def get_value(value_get, str_info):
@@ -164,16 +160,29 @@ def mod_3():
                 break
     return 0
 
+print('''开源代码地址：https://github.com/guofei9987/blind_watermark ，欢迎star
+本程序免费提供使用！
+程序开始运行：
+请注意，本程序需要和其下文件夹配合工作他们分别是:
+    yuantu:放置原图
+    shuiyin；存放水印
+    jiemi存放等待解密文件
+    shuichu输出文件夹
+复制此程序时，请直接打包本程序所在文件夹
 
-print("开源代码地址：https://github.com/guofei9987/blind_watermark")
-print("本程序免费提供使用！")
-print("程序开始运行：")
-print("如程序出错，请检查你的输入内容，重新打开此程序即可")
-print("请注意，本程序需要和其下文件夹配合工作他们分别是:\n yuantu:放置原图\n shuiyin；存放水印\n jiemi存放等待解密文件\n shuichu输出文件夹\n 复制此程序时，请直接打包本程序所在文件夹")
+请选择程序工作模式：
+    1: 把盲水印嵌入原图
+    2: 水印解密模式（需要输入密码）
+''')
 
-print("请选择程序工作模式：\n 1: 默认工作模式（自动添加一定数量水印）\n 2: 自定义模式（请在文件夹添加你的自定义水印）\n 3: 水印解密模式（需要输入密码）")
-work_mode = 0
-work_mode = get_value(work_mode, "请选输入工作模式序号")
+
+work_mode = input("请选输入工作模式序号")
+if not work_mode in (1, 2):
+    print('模式选择错误')
+    input("按任意键退出")
+    exit(0)
+
+
 if work_mode != 0 and work_mode != 1 and work_mode != 2 and work_mode != 3:
     print("你输入的工作模式序号不存在")
 if work_mode == 0:
@@ -184,9 +193,8 @@ if work_mode == 1:
 
 if work_mode == 2:
     res = 1
-    res = mod_2()
-if work_mode == 3:
-    res = 1
     res = mod_3()
 
-input("程序运行完毕，需要再次使用请重新打开")
+input('''程序运行完毕，需要再次使用请重新打开
+按任意键退出
+''')
