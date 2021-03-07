@@ -4,7 +4,7 @@ from blind_watermark import att
 import numpy as np
 
 # 一次纵向裁剪打击
-att.cut_att_height('output/embedded.png', 'output/纵向裁剪打击.png', ratio=0.5)
+att.cut_att_height('output/embedded.png', 'output/纵向裁剪攻击.png', ratio=0.5)
 
 att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=(1200, 1920))
 
