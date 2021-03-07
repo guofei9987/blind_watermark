@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# run origin.py to generate the embedded image
 from blind_watermark import att
 
 # %% 亮度调低攻击

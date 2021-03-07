@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# run origin.py to generate the embedded image
 
 from blind_watermark import att
 import numpy as np
