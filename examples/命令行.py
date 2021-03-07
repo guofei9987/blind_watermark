@@ -1,4 +1,4 @@
-# encoding:utf-8
+# -*- coding: utf-8 -*-
 
 from blind_watermark import WaterMark
 import os

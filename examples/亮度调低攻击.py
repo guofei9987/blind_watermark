@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from blind_watermark import att
 
 # %% 亮度调低攻击
-att.bright_att('output/打上水印的图.png', 'output/亮度调低攻击.png', ratio=0.9)
+att.bright_att('output/embedded.png', 'output/亮度调低攻击.png', ratio=0.9)
 
 # %% 提取水印
 from blind_watermark import WaterMark

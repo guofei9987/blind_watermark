@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from blind_watermark import att
 
 # 旋转攻击
-att.rot_att('output/打上水印的图.png', 'output/旋转攻击.png', angle=45)
+att.rot_att('output/embedded.png', 'output/旋转攻击.png', angle=45)
 att.rot_att('output/旋转攻击.png', 'output/旋转攻击_还原.png', angle=-45)
 
 # %%提取水印

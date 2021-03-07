@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # attack on the watermark
 import cv2
 import numpy as np

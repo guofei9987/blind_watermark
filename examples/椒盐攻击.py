@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 from blind_watermark import att
 import numpy as np
 import cv2
 
 # %%椒盐攻击
-att.salt_pepper_att('output/打上水印的图.png', 'output/椒盐攻击.png', ratio=0.05)
+att.salt_pepper_att('output/embedded.png', 'output/椒盐攻击.png', ratio=0.05)
 # ratio是椒盐概率
 
 # %%纵向裁剪打击.png

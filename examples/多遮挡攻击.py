@@ -1,10 +1,12 @@
+# coding=utf-8
+
 from blind_watermark import att
 import numpy as np
 import cv2
 
 # %%
 # 攻击
-att.shelter_att('output/打上水印的图.png', 'output/多遮挡攻击.png', ratio=0.1, n=10)
+att.shelter_att('output/embedded.png', 'output/多遮挡攻击.png', ratio=0.1, n=10)
 
 # %%多遮挡攻击.png
 from blind_watermark import WaterMark
