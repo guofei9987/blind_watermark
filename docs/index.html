@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>scikit-opt</title>
+    <title>blind_watermark</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="description" content="Description">
     <meta name="viewport"
@@ -27,7 +27,7 @@
         plugins: [
             function (hook, vm) {
                 hook.beforeEach(function (html) {
-                    var url = 'https://github.com/guofei9987/scikit-opt/blob/master/docs/' + vm.route.file;
+                    var url = 'https://github.com/guofei9987/blind_watermark/blob/master/docs/' + vm.route.file;
                     var editHtml = '[:memo: Edit](' + url + ')\n';
 
                     return editHtml

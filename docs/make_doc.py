@@ -39,7 +39,7 @@ def search_code(py_file_name, section_idx):
             content_new.append(content[i])
         i += 1
     return [
-               '-> Demo code: [{py_file_name}#s{section_idx}](https://github.com/guofei9987/scikit-opt/blob/master/{py_file_name}#L{idx_first_match})\n'.
+               '-> Demo code: [{py_file_name}#s{section_idx}](https://github.com/guofei9987/blind_watermark/blob/master/{py_file_name}#L{idx_first_match})\n'.
                    format(py_file_name=py_file_name, section_idx=section_idx + 1, idx_first_match=idx_first_match),
                '```python\n'] \
            + content_new \
