@@ -9,13 +9,18 @@
 [![License](https://img.shields.io/pypi/l/blind_watermark.svg)](https://github.com/guofei9987/blind_watermark/blob/master/LICENSE)
 ![Python](https://img.shields.io/badge/python->=3.5-green.svg)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
+[![stars](https://img.shields.io/github/stars/guofei9987/scikit-opt.svg?style=social)](https://github.com/guofei9987/blind_watermark/)
+[![fork](https://img.shields.io/github/forks/guofei9987/blind_watermark?style=social)](https://github.com/guofei9987/blind_watermark/fork)
 [![Downloads](https://pepy.tech/badge/blind-watermark)](https://pepy.tech/project/blind-watermark)
+[![Discussions](https://img.shields.io/badge/discussions-green.svg)](https://github.com/guofei9987/blind_watermark/discussions)
 
 
 - **Documentation:** [https://BlindWatermark.github.io/blind_watermark/#/en/](https://BlindWatermark.github.io/blind_watermark/#/en/)
 - **文档：** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://BlindWatermark.github.io/blind_watermark/#/zh/)  
 - **English readme** [README.md](README.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
+
+![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
 
 
 # 安装
@@ -30,7 +35,7 @@ cd blind_watermark
 pip install .
 ```
 
-## 如何使用
+# 如何使用
 
 嵌入水印
 ```python

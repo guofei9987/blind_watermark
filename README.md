@@ -27,6 +27,7 @@ Blind watermark based on wavelet transform.
 [![License](https://img.shields.io/pypi/l/blind_watermark.svg)](https://github.com/guofei9987/blind_watermark/blob/master/LICENSE)
 ![Python](https://img.shields.io/badge/python->=3.5-green.svg)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
+[![stars](https://img.shields.io/github/stars/guofei9987/scikit-opt.svg?style=social)](https://github.com/guofei9987/blind_watermark/)
 [![fork](https://img.shields.io/github/forks/guofei9987/blind_watermark?style=social)](https://github.com/guofei9987/blind_watermark/fork)
 [![Downloads](https://pepy.tech/badge/blind-watermark)](https://pepy.tech/project/blind-watermark)
 [![Discussions](https://img.shields.io/badge/discussions-green.svg)](https://github.com/guofei9987/blind_watermark/discussions)
@@ -37,6 +38,7 @@ Blind watermark based on wavelet transform.
 - **中文 readme** [README_cn.md](README_cn.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
+![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
 
 # install
 ```bash
