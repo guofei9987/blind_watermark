@@ -86,14 +86,19 @@ with open('../README.md', encoding='utf-8', mode="w") as f_readme:
 with open('en/README.md', encoding='utf-8', mode="w") as f_readme_en:
     f_readme_en.writelines(readme_new[20:])
 
-docs = ['zh/README.md',
-        'zh/more_ga.md', 'en/more_ga.md',
-        'zh/more_pso.md', 'en/more_pso.md',
-        'zh/more_sa.md', 'en/more_sa.md',
-        ]
-for i in docs:
-    docs_new = make_doc(origin_file=i)
-    with open(i, encoding='utf-8', mode="w") as f:
-        f.writelines(docs_new)
+# 跟目录的 README_cn.md 和 zh/README.md
+readme_zh = make_doc(origin_file='../README_cn.md')
+with open('../README_cn.md', encoding='utf-8', mode="w") as f_readme:
+    f_readme.writelines(readme_zh)
 
-sys.exit()
+with open('zh/README.md', encoding='utf-8', mode="w") as f_readme_en:
+    f_readme_en.writelines(readme_zh)
+
+# docs = ['zh/README.md','en/README.md'
+#         ]
+# for i in docs:
+#     docs_new = make_doc(origin_file=i)
+#     with open(i, encoding='utf-8', mode="w") as f:
+#         f.writelines(docs_new)
+
+# sys.exit()

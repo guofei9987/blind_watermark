@@ -141,4 +141,4 @@ print(wm_extract)
 ```python
 WaterMark(..., processes=None)
 ```
-- `processes`: 默认为 `None`, 表示使用全部线程。可以为整数，指定并发线程数。
+- `processes`: 整数，指定线程数。默认为 `None`, 表示使用全部线程。

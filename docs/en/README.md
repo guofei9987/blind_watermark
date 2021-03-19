@@ -9,14 +9,18 @@ Blind watermark based on wavelet transform.
 [![License](https://img.shields.io/pypi/l/blind_watermark.svg)](https://github.com/guofei9987/blind_watermark/blob/master/LICENSE)
 ![Python](https://img.shields.io/badge/python->=3.5-green.svg)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
+[![stars](https://img.shields.io/github/stars/guofei9987/blind_watermark.svg?style=social)](https://github.com/guofei9987/blind_watermark/)
+[![fork](https://img.shields.io/github/forks/guofei9987/blind_watermark?style=social)](https://github.com/guofei9987/blind_watermark/fork)
 [![Downloads](https://pepy.tech/badge/blind-watermark)](https://pepy.tech/project/blind-watermark)
-[![Join the chat at https://gitter.im/guofei9987/blind_watermark](https://badges.gitter.im/guofei9987/blind_watermark.svg)](https://gitter.im/guofei9987/blind_watermark?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Discussions](https://img.shields.io/badge/discussions-green.svg)](https://github.com/guofei9987/blind_watermark/discussions)
 
 
 - **Documentation:** [https://BlindWatermark.github.io/blind_watermark/#/en/](https://BlindWatermark.github.io/blind_watermark/#/en/)
 - **文档：** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://BlindWatermark.github.io/blind_watermark/#/zh/)  
+- **中文 readme** [README_cn.md](README_cn.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
+![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
 
 # install
 ```bash
@@ -57,11 +61,12 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 
 |origin image|watermark|
 |--|--|
-|![origin_image](https://blindwatermark.github.io/blind_watermark/原图.jpg)|![watermark](https://blindwatermark.github.io/blind_watermark/水印.png)|
+|![origin_image](docs/原图.jpg)|![watermark](docs/水印.png)|
 
 |image embedded with watermark|extracted watermark|
 |--|--|
-|![origin_image](https://blindwatermark.github.io/blind_watermark/打上水印的图.jpg)|![watermark](https://blindwatermark.github.io/blind_watermark/解出的水印.png)|
+|![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
+
 
 
 ### Attack on the embedded image
@@ -69,14 +74,14 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 
 |attack method|image after attack|extracted watermark|
 |--|--|--|
-|Rotate 45 Degrees<br>[旋转攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/旋转攻击.py)|![旋转攻击](https://blindwatermark.github.io/blind_watermark/旋转攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/旋转攻击_提取水印.png)|
-|Many Coverage<br>[多遮挡攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/多遮挡攻击.py)| ![多遮挡攻击](https://blindwatermark.github.io/blind_watermark/多遮挡攻击.jpg) |![多遮挡_提取水印](https://blindwatermark.github.io/blind_watermark/多遮挡攻击_提取水印.png)|
-|50% Horizontal Crop<br>[横向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/横向裁剪攻击.py)|![横向裁剪攻击](https://blindwatermark.github.io/blind_watermark/横向裁剪攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/横向裁剪攻击_提取水印.png)|
-|50% Vertical Crop<br>[纵向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/纵向裁剪攻击.py)|![纵向裁剪攻击](https://blindwatermark.github.io/blind_watermark/纵向裁剪攻击.jpg)|![纵向裁剪](https://blindwatermark.github.io/blind_watermark/纵向裁剪攻击_提取水印.png)|
-|Resize（1200X1920->600X800）<br>[缩放攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/缩放攻击.py)|![缩放攻击](https://blindwatermark.github.io/blind_watermark/缩放攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/缩放攻击_提取水印.png)|
-|Pepper Noise<br>[椒盐击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/椒盐攻击.py)|![椒盐攻击](https://blindwatermark.github.io/blind_watermark/椒盐攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/椒盐攻击_提取水印.png)|
-|Brightness 10% Up<br>[亮度调高攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调高攻击.py)|![亮度调高攻击](https://blindwatermark.github.io/blind_watermark/亮度调高攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/亮度调高攻击_提取水印.png)|
-|Brightness 10% Down<br>[亮度调暗攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调低攻击.py)|![亮度调低攻击](https://blindwatermark.github.io/blind_watermark/亮度调低攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/亮度调低攻击_提取水印.png)|
+|Rotate 45 Degrees<br>[旋转攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/旋转攻击.py)|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
+|Many Coverage<br>[多遮挡攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/多遮挡攻击.py)| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
+|50% Horizontal Crop<br>[横向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/横向裁剪攻击.py)|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
+|50% Vertical Crop<br>[纵向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/纵向裁剪攻击.py)|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
+|Resize（1200X1920->600X800）<br>[缩放攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/缩放攻击.py)|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
+|Pepper Noise<br>[椒盐击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/椒盐攻击.py)|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
+|Brightness 10% Up<br>[亮度调高攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调高攻击.py)|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
+|Brightness 10% Down<br>[亮度调暗攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调低攻击.py)|![亮度调低攻击](docs/亮度调低攻击.jpg)|![](docs/亮度调低攻击_提取水印.png)|
 
 
 ### embed string
@@ -101,7 +106,6 @@ print(wm_extract)
 ```
 Output:
 >@guofei9987 开源万岁！
-
 
 ### embed array of bits
 
@@ -129,3 +133,11 @@ print(wm_extract)
 Notice that `wm_shape` (shape of watermark) is necessary
 
 The output `wm_extract` is an array of float. set a threshold such as 0.5.
+
+
+# Concurrency
+
+```python
+WaterMark(..., processes=None)
+```
+- `processes`: number of processes, can be integer. Default `None`, meaning use all processes.  
