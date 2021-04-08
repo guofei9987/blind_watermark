@@ -20,7 +20,6 @@
 - **English readme** [README.md](README.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
-![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
 
 
 # 安装
@@ -60,29 +59,9 @@ bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_
 
 ## 效果展示
 
-|原图|水印|
-|--|--|
-|![原图](docs/原图.jpg)|![水印](docs/水印.png)|
 
-|打上水印的图|提取的水印|
-|--|--|
-|![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
+![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
 
-
-
-### 各种攻击后的效果
-
-
-|攻击方式|攻击后的图片|提取的水印|
-|--|--|--|
-|旋转攻击45度<br>[旋转攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/旋转攻击.py)|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
-|多遮挡<br>[多遮挡攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/多遮挡攻击.py)| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-|横向裁剪50%<br>[横向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/横向裁剪攻击.py)|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
-|纵向裁剪50%<br>[纵向裁剪攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/纵向裁剪攻击.py)|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
-|缩放攻击（1200X1920->600X800）<br>[缩放攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/缩放攻击.py)|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
-|椒盐攻击<br>[椒盐击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/椒盐攻击.py)|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
-|亮度提高10%<br>[亮度调高攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调高攻击.py)|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
-|亮度调低10%<br>[亮度调暗攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调低攻击.py)|![亮度调低攻击](docs/亮度调低攻击.jpg)|![](docs/亮度调低攻击_提取水印.png)|
 
 ### 嵌入字符串
 嵌入：

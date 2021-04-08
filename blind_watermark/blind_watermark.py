@@ -135,29 +135,44 @@ class WaterMark:
             wm = (wm * 3 + tmp * 1) / 4
         return wm
 
-    def extract(self, filename, wm_shape, out_wm_name=None, mode='img'):
-        self.wm_size = np.array(wm_shape).prod()
+    def extract_raw(self, filename):
+        # 每个分块提取 1 bit 信息
         self.read_img(filename)
         self.init_block_index()
 
-        wm_extract = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
-        wm = np.zeros(shape=self.wm_size)  # 最终提取的水印，是 wm_extract 循环嵌入+3个 channel 的平均
+        wm_block_bit = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
         self.idx_shuffle = np.random.RandomState(self.password_img) \
             .random(size=(self.block_num, self.block_shape[0] * self.block_shape[1])) \
             .argsort(axis=1)
         for channel in range(3):
-            wm_extract[channel, :] = self.pool.map(self.block_get_wm,
+            wm_block_bit[channel, :] = self.pool.map(self.block_get_wm,
                                                    [(self.ca_block[channel][self.block_index[i]], self.idx_shuffle[i])
                                                     for i in range(self.block_num)])
+        return wm_block_bit
 
+    def extract_avg(self, wm_block_bit):
+        # 对循环嵌入+3个 channel 求平均
+        wm_avg = np.zeros(shape=self.wm_size)
         for i in range(self.wm_size):
-            wm[i] = wm_extract[:, i::self.wm_size].mean()
+            wm_avg[i] = wm_block_bit[:, i::self.wm_size].mean()
+        return wm_avg
 
-        # 水印提取完成后，解密
+    def extract_decrypt(self, wm_avg):
         wm_index = np.arange(self.wm_size)
         np.random.RandomState(self.password_wm).shuffle(wm_index)
-        wm[wm_index] = wm.copy()
+        wm_avg[wm_index] = wm_avg.copy()
+        return wm_avg
 
+    def extract(self, filename, wm_shape, out_wm_name=None, mode='img'):
+        self.wm_size = np.array(wm_shape).prod()
+
+        # 提取每个分块埋入的 bit：
+        wm_block_bit = self.extract_raw(filename=filename)
+        # 做平均：
+        wm_avg = self.extract_avg(wm_block_bit)
+        # 解密：
+        wm = self.extract_decrypt(wm_avg=wm_avg)
+        # 转化为指定格式：
         if mode == 'img':
             cv2.imwrite(out_wm_name, 255 * wm.reshape(wm_shape[0], wm_shape[1]))
         elif mode == 'str':
