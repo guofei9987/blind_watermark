@@ -31,4 +31,9 @@ setup(name='blind_watermark',
       packages=find_packages(),
       platforms=['linux', 'windows', 'macos'],
       install_requires=['numpy', 'opencv-python'],
-      zip_safe=False)
+      zip_safe=False,
+      entry_points={
+          'console_scripts': [
+              'blind_watermark = blind_watermark.cli_tools:main'
+          ]
+      })

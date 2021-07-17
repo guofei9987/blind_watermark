@@ -56,6 +56,16 @@ pip install .
 
 ## How to use
 
+### Use in bash
+```bash
+cd examples
+# embed watermark into image:
+blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
+# extract watermark from image:
+blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
+```
+
+### Use in Python
 How to embed watermark:
 ```python
 from blind_watermark import WaterMark

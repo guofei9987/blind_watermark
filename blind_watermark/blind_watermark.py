@@ -7,7 +7,6 @@ import numpy as np
 import copy
 import cv2
 from pywt import dwt2, idwt2
-from multiprocessing.dummy import Pool as ThreadPool
 from .pool import AutoPool
 
 

@@ -35,8 +35,19 @@ cd blind_watermark
 pip install .
 ```
 
-# 如何使用
+## 如何使用
 
+### 命令行中使用
+
+```bash
+cd examples
+# 嵌入水印：
+blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
+# 提取水印：
+blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
+```
+
+### Python 中使用
 嵌入水印
 ```python
 from blind_watermark import WaterMark
