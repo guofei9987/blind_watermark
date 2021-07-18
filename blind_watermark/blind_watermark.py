@@ -8,10 +8,11 @@ import copy
 import cv2
 from pywt import dwt2, idwt2
 from multiprocessing.dummy import Pool as ThreadPool
+from .pool import AutoPool
 
 
 class WaterMark:
-    def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), processes=None):
+    def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), mode='common', processes=None):
         self.block_shape = np.array(block_shape)
         self.password_wm, self.password_img = password_wm, password_img  # 打乱水印和打乱原图分块的随机种子
         self.d1, self.d2 = 36, 20  # d1/d2 越大鲁棒性越强,但输出图片的失真越大
@@ -23,7 +24,7 @@ class WaterMark:
         self.ca_part = [np.array([])] * 3  # 四维分块后，有时因不整除而少一部分，self.ca_part 是少这一部分的 self.ca
 
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
-        self.pool = ThreadPool(processes=processes)  # 水印插入分块多进程
+        self.pool = AutoPool(mode=mode, processes=processes)
 
     def init_block_index(self):
         self.block_num = self.ca_block_shape[0] * self.ca_block_shape[1]
@@ -146,8 +147,8 @@ class WaterMark:
             .argsort(axis=1)
         for channel in range(3):
             wm_block_bit[channel, :] = self.pool.map(self.block_get_wm,
-                                                   [(self.ca_block[channel][self.block_index[i]], self.idx_shuffle[i])
-                                                    for i in range(self.block_num)])
+                                                     [(self.ca_block[channel][self.block_index[i]], self.idx_shuffle[i])
+                                                      for i in range(self.block_num)])
         return wm_block_bit
 
     def extract_avg(self, wm_block_bit):
