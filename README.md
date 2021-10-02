@@ -20,7 +20,7 @@
 
 # blind-watermark
 
-Blind watermark based on dct and svd.
+Blind watermark based on DWT-DCT-SVD.
 
 
 [![PyPI](https://img.shields.io/pypi/v/blind_watermark)](https://pypi.org/project/blind_watermark/)
