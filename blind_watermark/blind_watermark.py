@@ -35,7 +35,11 @@ class WaterMark:
 
     def read_img(self, filename):
         # 读入图片->YUV化->加白边使像素变偶数->四维分块
-        self.img = cv2.imread(filename).astype(np.float32)
+        img = cv2.imread(filename)
+        if img is None:
+            raise IOError("image file '{filename}' not read".format(filename=filename))
+
+        self.img = img.astype(np.float32)
         self.img_shape = self.img.shape[:2]
 
         # 如果不是偶数，那么补上白边
@@ -56,8 +60,12 @@ class WaterMark:
                                                                      self.ca_block_shape, strides)
 
     def read_img_wm(self, filename):
+        wm = cv2.imread(filename)
+        if wm is None:
+            raise IOError("file '{filename}' not read".format(filename=filename))
+
         # 读入图片格式的水印，并转为一维 bit 格式
-        self.wm = cv2.imread(filename)[:, :, 0]
+        self.wm = wm[:, :, 0]
         # 加密信息只用bit类，抛弃灰度级别
         self.wm_bit = self.wm.flatten() > 128
 
@@ -75,7 +83,7 @@ class WaterMark:
 
     def block_add_wm(self, arg):
         block, shuffler, i = arg
-        # dct->flatten->加密->逆flatten->svd->打水印->逆svd->逆dct
+        # dct->(flatten->加密->逆flatten)->svd->打水印->逆svd->(flatten->解密->逆flatten)->逆dct
         wm_1 = self.wm_bit[i % self.wm_size]
         block_dct = cv2.dct(block)
 
