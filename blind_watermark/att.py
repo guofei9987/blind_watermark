@@ -23,7 +23,7 @@ def cut_att_width(input_filename, output_file_name, ratio=0.8):
     cv2.imwrite(output_file_name, input_img[:, :width, :])
 
 
-def anti_cut_att(input_filename, output_file_name, origin_shape):
+def anti_cut_att_old(input_filename, output_file_name, origin_shape):
     # 反裁剪攻击：复制一块范围，然后补全
     # origin_shape 分辨率与约定理解的是颠倒的，约定的是列数*行数
     input_img = cv2.imread(input_filename)
@@ -40,6 +40,31 @@ def anti_cut_att(input_filename, output_file_name, origin_shape):
     while output_img_shape[1] < origin_shape[1]:
         output_img = np.concatenate([output_img, output_img[:, :origin_shape[1] - output_img_shape[1], :]], axis=1)
         output_img_shape = output_img.shape
+
+    cv2.imwrite(output_file_name, output_img)
+
+
+def anti_cut_att(input_filename, output_file_name, origin_shape):
+    # 反裁剪攻击：补0
+    # origin_shape 分辨率与约定理解的是颠倒的，约定的是列数*行数
+    input_img = cv2.imread(input_filename)
+    output_img = input_img.copy()
+    output_img_shape = output_img.shape
+    if output_img_shape[0] > origin_shape[0] or output_img_shape[0] > origin_shape[0]:
+        print('裁剪打击后的图片，不可能比原始图片大，检查一下')
+        return
+
+    # 还原纵向打击
+    if output_img_shape[0] < origin_shape[0]:
+        output_img = np.concatenate(
+            [output_img, np.zeros((origin_shape[0] - output_img_shape[0], output_img_shape[1], 3))]
+            , axis=0)
+        output_img_shape = output_img.shape
+
+    if output_img_shape[1] < origin_shape[1]:
+        output_img = np.concatenate(
+            [output_img, np.zeros((output_img_shape[0], origin_shape[1] - output_img_shape[1], 3))]
+            , axis=1)
 
     cv2.imwrite(output_file_name, output_img)
 

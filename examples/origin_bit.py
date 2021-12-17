@@ -10,7 +10,8 @@ bwm1 = WaterMark(password_img=1, password_wm=1)
 bwm1.read_img('pic/ori_img.jpg')
 
 # 读取水印
-wm = [True, False, True, True, True, False, True, True, False, True]
+# wm = [True, False, True, True, True, False, True, True, False, True]
+wm = [True, False, True, False, True, False, True, False, True, False]
 bwm1.read_wm(wm, mode='bit')
 
 # 打上盲水印
