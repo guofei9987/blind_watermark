@@ -178,3 +178,8 @@ The output `wm_extract` is an array of float. set a threshold such as 0.5.
 WaterMark(..., processes=None)
 ```
 - `processes`: number of processes, can be integer. Default `None`, meaning use all processes.  
+
+## Related Project
+
+text_blind_watermark: [https://github.com/guofei9987/text_blind_watermark](https://github.com/guofei9987/text_blind_watermark)  
+Embed string into string.
