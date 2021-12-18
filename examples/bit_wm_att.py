@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-# run origin.py to generate the embedded image
+# -*- coding: utf-8 -*-
 
 from blind_watermark import att
+from blind_watermark import WaterMark
+
 from blind_watermark import WaterMarkCore
 import numpy as np
 
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# 除了嵌入图片，也可以嵌入比特类数据
-import numpy as np
-from blind_watermark import WaterMark
+#%%
 
 bwm1 = WaterMark(password_img=1, password_wm=1)
 
@@ -32,6 +30,15 @@ print("不攻击的提取结果：", wm_extract)
 
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
+
+# %%截屏攻击
+att.cut_att('output/embedded.png', 'output/截屏攻击.png', o1=(0.2, 0.2), o2=(0.4, 0.5))
+
+bwm1 = WaterMark(password_wm=1, password_img=1)
+wm_extract = bwm1.extract('output/截屏攻击.png', wm_shape=10, mode='bit')
+print("截屏攻击后的提取结果：", wm_extract)
+assert np.all(wm == wm_extract), '提取水印和原水印不一致'
+
 # %%
 # 一次横向裁剪打击
 att.cut_att_width('output/embedded.png', 'output/横向裁剪攻击.png', ratio=0.2)
@@ -45,7 +52,7 @@ print("横向裁剪攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
 # %%一次纵向裁剪攻击
-att.cut_att_height('output/embedded.png', 'output/纵向裁剪攻击.png', ratio=0.5)
+att.cut_att_height('output/embedded.png', 'output/纵向裁剪攻击.png', ratio=0.2)
 att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=(1200, 1920))
 
 # 提取
@@ -76,9 +83,19 @@ assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
 # %%多遮挡攻击
 
-att.shelter_att('output/embedded.png', 'output/多遮挡攻击.png', ratio=0.1, n=10)
+att.shelter_att('output/embedded.png', 'output/多遮挡攻击.png', ratio=0.1, n=60)
 
 # 提取
+bwm1 = WaterMark(password_wm=1, password_img=1)
+wm_extract = bwm1.extract('output/多遮挡攻击.png', wm_shape=10, mode='bit')
+print("纵向裁剪攻击后的提取结果：", wm_extract)
+assert np.all(wm == wm_extract), '提取水印和原水印不一致'
+
+# %%缩放攻击
+att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(800, 600))
+att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_shape=(1920, 1200))
+# out_shape 是分辨率，需要颠倒一下
+
 bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/多遮挡攻击.png', wm_shape=10, mode='bit')
 print("纵向裁剪攻击后的提取结果：", wm_extract)

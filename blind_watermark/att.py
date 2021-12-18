@@ -23,6 +23,18 @@ def cut_att_width(input_filename, output_file_name, ratio=0.8):
     cv2.imwrite(output_file_name, input_img[:, :width, :])
 
 
+def cut_att(input_filename, output_file_name, o1=(0.2, 0.2), o2=(0.4, 0.5)):
+    # 截屏攻击：其它部分都补0
+    input_img = cv2.imread(input_filename)
+    shape = input_img.shape
+    x1, x2, y1, y2 = shape[0] * o1[0], shape[1] * o1[0], shape[0] * o2[0], shape[1] * o2[1]
+    input_img[:int(x1), :] = 255
+    input_img[int(x2):, :] = 255
+    input_img[:, :int(y1)] = 255
+    input_img[:, int(y2):] = 255
+    cv2.imwrite(output_file_name, input_img)
+
+
 def anti_cut_att_old(input_filename, output_file_name, origin_shape):
     # 反裁剪攻击：复制一块范围，然后补全
     # origin_shape 分辨率与约定理解的是颠倒的，约定的是列数*行数
@@ -57,13 +69,13 @@ def anti_cut_att(input_filename, output_file_name, origin_shape):
     # 还原纵向打击
     if output_img_shape[0] < origin_shape[0]:
         output_img = np.concatenate(
-            [output_img, np.zeros((origin_shape[0] - output_img_shape[0], output_img_shape[1], 3))]
+            [output_img, 255 * np.ones((origin_shape[0] - output_img_shape[0], output_img_shape[1], 3))]
             , axis=0)
         output_img_shape = output_img.shape
 
     if output_img_shape[1] < origin_shape[1]:
         output_img = np.concatenate(
-            [output_img, np.zeros((output_img_shape[0], origin_shape[1] - output_img_shape[1], 3))]
+            [output_img, 255 * np.ones((output_img_shape[0], origin_shape[1] - output_img_shape[1], 3))]
             , axis=1)
 
     cv2.imwrite(output_file_name, output_img)
@@ -98,7 +110,7 @@ def shelter_att(input_filename, output_file_name, ratio=0.1, n=3):
         tmp = np.random.rand() * (1 - ratio)
         start_width, end_width = int(tmp * input_img_shape[1]), int((tmp + ratio) * input_img_shape[1])
 
-        output_img[start_height:end_height, start_width:end_width, :] = 0
+        output_img[start_height:end_height, start_width:end_width, :] = 255
 
     cv2.imwrite(output_file_name, output_img)
 

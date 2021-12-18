@@ -84,10 +84,9 @@ class WaterMarkCore:
 
         embed_ca = copy.deepcopy(self.ca)
         embed_YUV = [np.array([])] * 3
-        self.idx_shuffle = np.random.RandomState(self.password_img) \
-            .random(size=(self.block_num, self.block_shape[0] * self.block_shape[1])) \
-            .argsort(axis=1)
 
+        self.idx_shuffle = random_strategy1(self.password_img, self.block_num,
+                                            self.block_shape[0] * self.block_shape[1])
         for channel in range(3):
             tmp = self.pool.map(self.block_add_wm,
                                 [(self.ca_block[channel][self.block_index[i]], self.idx_shuffle[i], i)
@@ -130,9 +129,11 @@ class WaterMarkCore:
         self.init_block_index()
 
         wm_block_bit = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
-        self.idx_shuffle = np.random.RandomState(self.password_img) \
-            .random(size=(self.block_num, self.block_shape[0] * self.block_shape[1])) \
-            .argsort(axis=1)
+
+        self.idx_shuffle = random_strategy1(seed=self.password_img,
+                                            size=self.block_num,
+                                            block_shape=self.block_shape[0] * self.block_shape[1],  # 16
+                                            )
         for channel in range(3):
             wm_block_bit[channel, :] = self.pool.map(self.block_get_wm,
                                                      [(self.ca_block[channel][self.block_index[i]], self.idx_shuffle[i])
@@ -162,10 +163,9 @@ class WaterMarkCore:
 
 
 def one_dim_kmeans(inputs):
+    threshold = 0
     e_tol = 10 ** (-6)
-
     center = [inputs.min(), inputs.max()]  # 1. 初始化中心点
-
     for i in range(300):
         threshold = (center[0] + center[1]) / 2
         is_class01 = inputs > threshold  # 2. 检查所有点与这k个点之间的距离，每个点归类到最近的中心
@@ -175,5 +175,18 @@ def one_dim_kmeans(inputs):
             break
 
     is_class01 = inputs > threshold
-
     return is_class01
+
+
+def random_strategy1(seed, size, block_shape):
+    return np.random.RandomState(seed) \
+        .random(size=(size, block_shape)) \
+        .argsort(axis=1)
+
+
+def random_strategy2(seed, size, block_shape):
+    one_line = np.random.RandomState(seed) \
+        .random(size=(1, block_shape)) \
+        .argsort(axis=1)
+
+    return np.repeat(one_line, repeats=size, axis=0)
