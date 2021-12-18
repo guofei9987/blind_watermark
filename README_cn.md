@@ -96,6 +96,10 @@ bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_
 |亮度调低10%<br>[亮度调暗攻击.py](https://github.com/guofei9987/blind_watermark/blob/master/examples/亮度调低攻击.py)|![亮度调低攻击](docs/亮度调低攻击.jpg)|![](docs/亮度调低攻击_提取水印.png)|
 
 ### 嵌入字符串
+
+参考 [代码](/examples/str_att.py)
+
+
 嵌入：
 ```python
 from blind_watermark import WaterMark
@@ -120,6 +124,9 @@ Output:
 
 
 ### 隐水印还可以是二进制数据
+
+参考 [代码](/examples/bit_att.py)
+
 
 作为 demo， 如果要嵌入是如下长度为6的二进制数据
 ```python

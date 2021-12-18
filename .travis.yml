@@ -13,9 +13,8 @@ install:
 # command to run tests
 script:
   - cd examples
-  - coverage run -p origin_bit.py
-  - coverage run -p origin.py
-  - coverage run -p origin_str.py
+  - coverage run -p bit_att.py
+  - coverage run -p str_att.py
   - cp .coverage.* ..
   - cd ..
 

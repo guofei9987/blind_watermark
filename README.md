@@ -115,6 +115,10 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 
 
 ### embed string
+
+See it [here](/examples/str_att.py)
+
+
 Embed:
 ```python
 from blind_watermark import WaterMark
@@ -138,6 +142,9 @@ Output:
 >@guofei9987 开源万岁！
 
 ### embed array of bits
+
+See it [here](/examples/bit_att.py)
+
 
 As demo, we embed 6 bytes data:
 ```python
