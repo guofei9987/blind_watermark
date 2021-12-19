@@ -41,7 +41,7 @@ class WaterMarkCore:
         self.img = img.astype(np.float32)
         self.img_shape = self.img.shape[:2]
 
-        # 如果不是偶数，那么补上白边
+        # 如果不是偶数，那么补上白边，Y（明亮度）UV（颜色）
         self.img_YUV = cv2.copyMakeBorder(cv2.cvtColor(self.img, cv2.COLOR_BGR2YUV),
                                           0, self.img.shape[0] % 2, 0, self.img.shape[1] % 2,
                                           cv2.BORDER_CONSTANT, value=(0, 0, 0))
@@ -154,3 +154,26 @@ class WaterMarkCore:
         # 做平均：
         wm_avg = self.extract_avg(wm_block_bit)
         return wm_avg
+
+    def extract_with_kmeans(self, filename, wm_shape):
+        wm_avg = self.extract(filename=filename, wm_shape=wm_shape)
+
+        return one_dim_kmeans(wm_avg)
+
+
+def one_dim_kmeans(inputs):
+    e_tol = 10 ** (-6)
+
+    center = [inputs.min(), inputs.max()]  # 1. 初始化中心点
+
+    for i in range(300):
+        threshold = (center[0] + center[1]) / 2
+        is_class01 = inputs > threshold  # 2. 检查所有点与这k个点之间的距离，每个点归类到最近的中心
+        center = [inputs[~is_class01].mean(), inputs[is_class01].mean()]  # 3. 重新找中心点
+        if np.abs((center[0] + center[1]) / 2 - threshold) < e_tol:  # 4. 停止条件
+            threshold = (center[0] + center[1]) / 2
+            break
+
+    is_class01 = inputs > threshold
+
+    return is_class01
