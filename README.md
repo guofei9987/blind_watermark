@@ -182,4 +182,4 @@ WaterMark(..., processes=None)
 ## Related Project
 
 text_blind_watermark: [https://github.com/guofei9987/text_blind_watermark](https://github.com/guofei9987/text_blind_watermark)  
-Embed string into string.
+Embed message into text.
