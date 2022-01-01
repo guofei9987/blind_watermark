@@ -21,6 +21,8 @@ class WaterMarkCore:
         self.ca_block = [np.array([])] * 3  # 每个 channel 存一个四维 array，代表四维分块后的结果
         self.ca_part = [np.array([])] * 3  # 四维分块后，有时因不整除而少一部分，self.ca_part 是少这一部分的 self.ca
 
+        self.alpha = None
+
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
         self.pool = AutoPool(mode=mode, processes=processes)
 
@@ -34,9 +36,15 @@ class WaterMarkCore:
 
     def read_img(self, filename):
         # 读入图片->YUV化->加白边使像素变偶数->四维分块
-        img = cv2.imread(filename)
+        img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
         if img is None:
             raise IOError("image file '{filename}' not read".format(filename=filename))
+
+        # 处理透明图
+        if img.shape[2] == 4:
+            if img[:, :, 3].min() < 255:
+                self.alpha = img[:, :, 3]
+                img = img[:, :, :3]
 
         self.img = img.astype(np.float32)
         self.img_shape = self.img.shape[:2]
@@ -108,6 +116,10 @@ class WaterMarkCore:
         embed_img_YUV = embed_img_YUV[:self.img_shape[0], :self.img_shape[1]]
         embed_img = cv2.cvtColor(embed_img_YUV, cv2.COLOR_YUV2BGR)
         embed_img = np.clip(embed_img, a_min=0, a_max=255)
+
+        if self.alpha is not None:
+            embed_img = cv2.merge([embed_img.astype(np.uint8), self.alpha])
+
         cv2.imwrite(filename, embed_img)
         return embed_img
 
