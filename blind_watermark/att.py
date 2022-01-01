@@ -23,12 +23,13 @@ def cut_att_width(input_filename, output_file_name, ratio=0.8):
     cv2.imwrite(output_file_name, input_img[:, :width, :])
 
 
-def cut_att(input_filename, output_file_name, o1=(0.2, 0.2), o2=(0.4, 0.5), resize=0.6):
+def cut_att(input_filename, output_file_name, loc=((0.3, 0.1), (0.7, 0.9)), resize=0.6):
     # 截屏攻击 + 缩放攻击 + 知道攻击参数
     # 截屏攻击：其它部分都补0
     input_img = cv2.imread(input_filename)
     shape = input_img.shape
-    x1, x2, y1, y2 = shape[0] * o1[0], shape[1] * o1[0], shape[0] * o2[0], shape[1] * o2[1]
+    # x1, x2, y1, y2 = shape[0] * o1[0], shape[1] * o1[0], shape[0] * o2[0], shape[1] * o2[1]
+    x1, y1, x2, y2 = shape[0] * loc[0][0], shape[1] * loc[0][1], shape[0] * loc[1][0], shape[1] * loc[1][1]
     input_img[:int(x1), :] = 255
     input_img[int(x2):, :] = 255
     input_img[:, :int(y1)] = 255

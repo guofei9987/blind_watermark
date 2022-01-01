@@ -21,14 +21,14 @@ print("不攻击的提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%截屏攻击+缩放攻击+知道攻击参数
-o1 = (0.2, 0.2)
-o2 = (0.4, 0.5)
+
+loc = ((0.3, 0.1), (0.5, 0.2))
 resize = 0.6
-att.cut_att('output/embedded.png', 'output/截屏攻击.png', o1=o1, o2=o2, resize=resize)
+att.cut_att('output/embedded.png', 'output/截屏攻击.png', loc=loc, resize=resize)
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/截屏攻击.png', wm_shape=len_wm, mode='str')
-print("截屏攻击={o1},{o2}，缩放攻击={resize}后的提取结果：".format(o1=o1, o2=o2, resize=resize), wm_extract)
+print("截屏攻击={loc}，缩放攻击={resize}，并且知道攻击参数。提取结果：".format(loc=loc, resize=resize), wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%
