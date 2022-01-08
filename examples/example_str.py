@@ -39,7 +39,7 @@ assert wm == wm_extract, '提取水印和原水印不一致'
 from blind_watermark import recover_crop
 
 loc = ((0.1, 0.1), (0.5, 0.5))
-scale = 0.9
+scale = 0.65
 att.cut_att2('output/embedded.png', 'output/截屏攻击2.png', loc=loc, scale=scale)
 
 # 还原截屏攻击
