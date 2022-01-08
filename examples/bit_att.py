@@ -3,7 +3,7 @@
 
 from blind_watermark import att
 from blind_watermark import WaterMark
-
+import cv2
 from blind_watermark import WaterMarkCore
 import numpy as np
 
@@ -12,7 +12,7 @@ import numpy as np
 bwm1 = WaterMark(password_img=1, password_wm=1)
 
 # 读取原图
-bwm1.read_img('pic/ori_img.jpg')
+bwm1.read_img('pic/ori_img.jpeg')
 
 # 读取水印
 wm = [True, False, True, False, True, False, True, False, True, False]
@@ -22,6 +22,7 @@ bwm1.read_wm(wm, mode='bit')
 bwm1.embed('output/embedded.png')
 
 len_wm = len(wm)  # 解水印需要用到长度
+ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击需要知道原图的shape
 
 # %% 解水印
 
@@ -47,7 +48,7 @@ assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 # 一次横向裁剪打击
 r = 0.2
 att.cut_att_width('output/embedded.png', 'output/横向裁剪攻击.png', ratio=r)
-att.anti_cut_att('output/横向裁剪攻击.png', 'output/横向裁剪攻击_填补.png', origin_shape=(1200, 1920))
+att.anti_cut_att('output/横向裁剪攻击.png', 'output/横向裁剪攻击_填补.png', origin_shape=ori_img_shape)
 
 # 提取水印
 bwm1 = WaterMark(password_wm=1, password_img=1)
@@ -59,11 +60,10 @@ assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 # %%一次纵向裁剪攻击
 ratio = 0.2
 att.cut_att_height('output/embedded.png', 'output/纵向裁剪攻击.png', ratio=ratio)
-att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=(1200, 1920))
+att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=ori_img_shape)
 
 # 提取
 bwm1 = WaterMark(password_wm=1, password_img=1)
-bwm1.extract(filename="output/纵向裁剪攻击_填补.png", wm_shape=(128, 128), out_wm_name="output/纵向裁剪攻击_提取水印.png")
 wm_extract = bwm1.extract('output/纵向裁剪攻击_填补.png', wm_shape=len_wm, mode='bit')
 print(f"纵向裁剪攻击ratio={ratio}后的提取结果：", wm_extract)
 
@@ -100,7 +100,7 @@ assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
 # %%缩放攻击
 att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(800, 600))
-att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_shape=(1920, 1200))
+att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_shape=ori_img_shape[::-1])
 # out_shape 是分辨率，需要颠倒一下
 
 bwm1 = WaterMark(password_wm=1, password_img=1)

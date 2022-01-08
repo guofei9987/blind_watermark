@@ -77,7 +77,6 @@ class WaterMark:
     def extract(self, filename, wm_shape, out_wm_name=None, mode='img'):
         img = cv2.imread(filename, flags=cv2.IMREAD_COLOR)
 
-
         self.wm_size = np.array(wm_shape).prod()
 
         if mode in ('str', 'bit'):
@@ -93,6 +92,6 @@ class WaterMark:
             cv2.imwrite(out_wm_name, 255 * wm.reshape(wm_shape[0], wm_shape[1]))
         elif mode == 'str':
             byte = ''.join((np.round(wm)).astype(np.int).astype(np.str))
-            wm = bytes.fromhex(hex(int(byte, base=2))[2:]).decode('utf-8')
+            wm = bytes.fromhex(hex(int(byte, base=2))[2:]).decode('utf-8', errors='replace')
 
         return wm

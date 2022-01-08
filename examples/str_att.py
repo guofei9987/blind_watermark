@@ -4,14 +4,18 @@
 import numpy as np
 from blind_watermark import WaterMark
 from blind_watermark import att
+import cv2
 
 bwm1 = WaterMark(password_img=1, password_wm=1)
-bwm1.read_img('pic/ori_img.jpg')
+bwm1.read_img('pic/ori_img.jpeg')
 wm = '@guofei9987 开源万岁！'
 bwm1.read_wm(wm, mode='str')
 bwm1.embed('output/embedded.png')
+
 len_wm = len(bwm1.wm_bit)  # 解水印需要用到长度
 print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
+
+ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击需要知道原图的shape
 
 # %% 解水印
 bwm1 = WaterMark(password_img=1, password_wm=1)
@@ -22,8 +26,8 @@ assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%截屏攻击+缩放攻击+知道攻击参数
 
-loc = ((0.3, 0.1), (0.5, 0.2))
-resize = 0.6
+loc = ((0.1, 0.1), (0.5, 0.5))
+resize = 0.7
 att.cut_att('output/embedded.png', 'output/截屏攻击.png', loc=loc, resize=resize)
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
@@ -33,9 +37,9 @@ assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%
 # 一次横向裁剪打击
-r = 0.2
+r = 0.3
 att.cut_att_width('output/embedded.png', 'output/横向裁剪攻击.png', ratio=r)
-att.anti_cut_att('output/横向裁剪攻击.png', 'output/横向裁剪攻击_填补.png', origin_shape=(1200, 1920))
+att.anti_cut_att('output/横向裁剪攻击.png', 'output/横向裁剪攻击_填补.png', origin_shape=ori_img_shape)
 
 # 提取水印
 bwm1 = WaterMark(password_wm=1, password_img=1)
@@ -47,11 +51,10 @@ assert wm == wm_extract, '提取水印和原水印不一致'
 # %%一次纵向裁剪攻击
 r = 0.2
 att.cut_att_height('output/embedded.png', 'output/纵向裁剪攻击.png', ratio=r)
-att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=(1200, 1920))
+att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=ori_img_shape)
 
 # 提取
 bwm1 = WaterMark(password_wm=1, password_img=1)
-bwm1.extract(filename="output/纵向裁剪攻击_填补.png", wm_shape=(128, 128), out_wm_name="output/纵向裁剪攻击_提取水印.png")
 wm_extract = bwm1.extract('output/纵向裁剪攻击_填补.png', wm_shape=len_wm, mode='str')
 print(f"纵向裁剪攻击r={r}后的提取结果：", wm_extract)
 
@@ -67,7 +70,7 @@ print(f"椒盐攻击ratio={ratio}后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
 # %%旋转攻击
-angle = 45
+angle = 60
 att.rot_att('output/embedded.png', 'output/旋转攻击.png', angle=angle)
 att.rot_att('output/旋转攻击.png', 'output/旋转攻击_还原.png', angle=-angle)
 
@@ -88,12 +91,19 @@ print(f"遮挡攻击{n}次后的提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%缩放攻击
-# att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(800, 600))
 att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(400, 300))
-att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_shape=(1920, 1200))
+att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_shape=ori_img_shape[::-1])
 # out_shape 是分辨率，需要颠倒一下
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/缩放攻击_还原.png', wm_shape=len_wm, mode='str')
+print("缩放攻击后的提取结果：", wm_extract)
+assert np.all(wm == wm_extract), '提取水印和原水印不一致'
+#%%
+
+att.bright_att('output/embedded.png', 'output/亮度攻击.png', ratio=0.9)
+att.bright_att('output/亮度攻击.png', 'output/亮度攻击_还原.png', ratio=1.1)
+wm_extract = bwm1.extract('output/亮度攻击_还原.png', wm_shape=len_wm, mode='str')
+
 print("缩放攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
