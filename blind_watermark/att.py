@@ -24,8 +24,8 @@ def cut_att_width(input_filename, output_file_name, ratio=0.8):
 
 
 def cut_att(input_filename, output_file_name, loc=((0.3, 0.1), (0.7, 0.9)), resize=0.6):
-    # 截屏攻击 + 缩放攻击 + 知道攻击参数
-    # 截屏攻击：其它部分都补0
+    # 截屏攻击 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（按照参数还原）
+    # 裁剪攻击：其它部分都补0
     input_img = cv2.imread(input_filename)
     shape = input_img.shape
     x1, y1, x2, y2 = shape[0] * loc[0][0], shape[1] * loc[0][1], shape[0] * loc[1][0], shape[1] * loc[1][1]
@@ -45,17 +45,18 @@ def cut_att(input_filename, output_file_name, loc=((0.3, 0.1), (0.7, 0.9)), resi
     return input_img
 
 
-def cut_att2(input_filename, output_file_name, loc=((0.3, 0.1), (0.9, 0.9)), resize=1.1):
-    # 截屏攻击 + 缩放攻击 + 不知道攻击参数
+def cut_att2(input_filename, output_file_name, loc=((0.3, 0.1), (0.9, 0.9)), scale=1.1):
+    # 截屏攻击 = 剪切攻击 + 缩放攻击 + 不知道攻击参数
     input_img = cv2.imread(input_filename)
-    shape = input_img.shape
-    x1, y1, x2, y2 = shape[0] * loc[0][0], shape[1] * loc[0][1], shape[0] * loc[1][0], shape[1] * loc[1][1]
+    h, w, _ = input_img.shape
+
+    # 剪切攻击
+    x1, y1, x2, y2 = w * loc[0][0], h * loc[0][1], w * loc[1][0], h * loc[1][1]
     input_img = input_img[int(x1):int(x2), int(y1):int(y2)]
 
     # 缩放攻击
-    input_img = cv2.resize(input_img,
-                           dsize=(int(shape[1] * resize), int(shape[0] * resize))
-                           )
+    h, w, _ = input_img.shape
+    input_img = cv2.resize(input_img, dsize=(int(w * scale), int(h * scale)))
 
     cv2.imwrite(output_file_name, input_img)
     return input_img

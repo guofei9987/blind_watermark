@@ -161,6 +161,14 @@ WaterMark(..., processes=None)
 ```
 - `processes`: 整数，指定线程数。默认为 `None`, 表示使用全部线程。
 
+
+## 常用软件攻击
+
+-[x] png 转 jpg。通过（转jpg时质量选最低，会有1个字符改变）
+-[x] jpg 转 png。通过
+-[ ] png微信压缩。不通过
+-[x] jpg微信压缩。通过
+
 ## 相关项目
 
 text_blind_watermark: [https://github.com/guofei9987/text_blind_watermark](https://github.com/guofei9987/text_blind_watermark)  
