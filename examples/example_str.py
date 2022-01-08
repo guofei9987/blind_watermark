@@ -24,7 +24,7 @@ print("不攻击的提取结果：", wm_extract)
 
 assert wm == wm_extract, '提取水印和原水印不一致'
 
-# %%截屏攻击+缩放攻击+知道攻击参数
+# %%截屏攻击 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（按照参数还原）
 
 loc = ((0.1, 0.1), (0.5, 0.5))
 resize = 0.7
@@ -33,6 +33,25 @@ att.cut_att('output/embedded.png', 'output/截屏攻击.png', loc=loc, resize=re
 bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/截屏攻击.png', wm_shape=len_wm, mode='str')
 print("截屏攻击={loc}，缩放攻击={resize}，并且知道攻击参数。提取结果：".format(loc=loc, resize=resize), wm_extract)
+assert wm == wm_extract, '提取水印和原水印不一致'
+
+# %% 截屏攻击 = 剪切攻击 + 缩放攻击 + 不知道攻击参数
+from blind_watermark import recover_crop
+
+loc = ((0.1, 0.1), (0.5, 0.5))
+scale = 0.9
+att.cut_att2('output/embedded.png', 'output/截屏攻击2.png', loc=loc, scale=scale)
+
+# 还原截屏攻击
+ind, score, scale_infer = recover_crop(original_file='output/embedded.png',
+                                       template_file='output/截屏攻击2.png',
+                                       output_file_name='output/截屏攻击2_还原.png',
+                                       scale=(0.5, 2), search_num=200)
+print("inference location={}, score={}, inference scale {}".format(ind, score, 1 / scale_infer))
+
+bwm1 = WaterMark(password_wm=1, password_img=1)
+wm_extract = bwm1.extract('output/截屏攻击2_还原.png', wm_shape=len_wm, mode='str')
+print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%
@@ -99,7 +118,7 @@ bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/缩放攻击_还原.png', wm_shape=len_wm, mode='str')
 print("缩放攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
-#%%
+# %%
 
 att.bright_att('output/embedded.png', 'output/亮度攻击.png', ratio=0.9)
 att.bright_att('output/亮度攻击.png', 'output/亮度攻击_还原.png', ratio=1.1)
