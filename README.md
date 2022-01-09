@@ -40,7 +40,7 @@ Blind watermark based on wavelet transform.
 - **中文 readme** [README_cn.md](README_cn.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
-![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
+
 
 # install
 ```bash
@@ -54,11 +54,75 @@ cd blind_watermark
 pip install .
 ```
 
-## How to use
+# How to use
 
 
-### Use in Python
-How to embed watermark:
+<!-- ### Use in bash
+
+
+```bash
+cd examples
+# embed watermark into image:
+blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
+# extract watermark from image:
+blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
+``` -->
+
+
+
+## Use in Python
+
+Original Image + Watermark = Watermarked Image
+
+![origin_image](docs/原图.jpeg) + '@guofei9987 开源万岁！' = ![打上水印的图](docs/打上水印的图.jpg)
+
+
+See the [codes](/examples/example_str.py)
+
+Embed watermark:
+```python
+from blind_watermark import WaterMark
+
+bwm1 = WaterMark(password_img=1, password_wm=1)
+bwm1.read_img('pic/ori_img.jpg')
+wm = '@guofei9987 开源万岁！'
+bwm1.read_wm(wm, mode='str')
+bwm1.embed('output/embedded.png')
+len_wm = len(bwm1.wm_bit)
+print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
+```
+
+Extract watermark:
+```python
+bwm1 = WaterMark(password_img=1, password_wm=1)
+wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
+print(wm_extract)
+```
+Output:
+>@guofei9987 开源万岁！
+
+### attacks on Watermarked Image
+
+
+|attack method|image after attack|extracted watermark|
+|--|--|--|
+|Rotate 45 Degrees|![旋转攻击](docs/旋转攻击.jpg)|'@guofei9987 开源万岁！'|
+|Random crop|![截屏攻击](docs/截屏攻击2_还原.jpg)|'@guofei9987 开源万岁！'|
+|Masks| ![多遮挡攻击](docs/多遮挡攻击.jpg) |'@guofei9987 开源万岁！'|
+|50% Horizontal cut|![横向裁剪攻击](docs/横向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
+|50% Vertical cut|![纵向裁剪攻击](docs/纵向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
+|Resize 0.5|![缩放攻击](docs/缩放攻击.jpg)|'@guofei9987 开源万岁！'|
+|Pepper Noise|![椒盐攻击](docs/椒盐攻击.jpg)|'@guofei9987 开源万岁！'|
+|Brightness 10% Down|![亮度攻击](docs/亮度攻击.jpg)|'@guofei9987 开源万岁！'|
+
+
+
+
+
+
+### embed images
+
+embed watermark:
 ```python
 from blind_watermark import WaterMark
 
@@ -72,83 +136,19 @@ bwm1.embed('output/embedded.png')
 ```
 
 
-How to extract watermark
+Extract watermark:
 ```python
 bwm1 = WaterMark(password_wm=1, password_img=1)
 # notice that wm_shape is necessary
 bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='output/extracted.png', )
 ```
 
-### Use in bash
-
-
-See it [here](/examples/example_str.py)
-
-
-Embed:
-```python
-from blind_watermark import WaterMark
-
-bwm1 = WaterMark(password_img=1, password_wm=1)
-bwm1.read_img('pic/ori_img.jpg')
-wm = '@guofei9987 开源万岁！'
-bwm1.read_wm(wm, mode='str')
-bwm1.embed('output/embedded.png')
-len_wm = len(bwm1.wm_bit)
-print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
-```
-
-Extract:
-```python
-bwm1 = WaterMark(password_img=1, password_wm=1)
-wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
-print(wm_extract)
-```
-Output:
->@guofei9987 开源万岁！
-
-
-
-## demos:
-
-|origin image|watermark|
-|--|--|
-|![origin_image](docs/原图.jpg)|![watermark](docs/水印.png)|
-
-|image embedded with watermark|extracted watermark|
-|--|--|
-|![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
-
-
-### Robust against attacks
 
 |attack method|image after attack|extracted watermark|
 |--|--|--|
 |Rotate 45 Degrees|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
+|Random crop|![截屏攻击](docs/截屏攻击2_还原.jpg)|![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
 |Mask| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-|50% Horizontal Crop|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
-|50% Vertical Crop|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
-|Resize（1200X1920->600X800）|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
-|Pepper Noise<br>|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
-|Brightness 10% Up|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
-
-
-
-
-
-
-
-### embed images
-
-
-```bash
-cd examples
-# embed watermark into image:
-blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
-# extract watermark from image:
-blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
-```
-
 
 
 ### embed array of bits

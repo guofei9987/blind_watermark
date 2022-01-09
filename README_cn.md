@@ -20,9 +20,6 @@
 - **English readme** [README.md](README.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
-![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
-
-
 # 安装
 ```bash
 pip install blind-watermark
@@ -35,9 +32,9 @@ cd blind_watermark
 pip install .
 ```
 
-## 如何使用
+# 如何使用
 
-### 命令行中使用
+<!-- ### 命令行中使用
 
 ```bash
 cd examples
@@ -45,62 +42,22 @@ cd examples
 blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
 # 提取水印：
 blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
-```
-
-### Python 中使用
-嵌入水印
-```python
-from blind_watermark import WaterMark
-
-bwm1 = WaterMark(password_wm=1, password_img=1)
-# 读取原图
-bwm1.read_img('pic/ori_img.jpg')
-# 读取水印
-bwm1.read_wm('pic/watermark.png')
-# 打上盲水印
-bwm1.embed('output/打上水印的图.png')
-```
-
-
-提取水印
-```python
-bwm1 = WaterMark(password_wm=1, password_img=1)
-# 注意需要设定水印的长宽wm_shape
-bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_wm_name='output/解出的水印.png', )
-```
-
-## 效果展示
-
-|原图|水印|
-|--|--|
-|![原图](docs/原图.jpg)|![水印](docs/水印.png)|
-
-|打上水印的图|提取的水印|
-|--|--|
-|![打上水印的图](docs/打上水印的图.jpg)|![提取的水印](docs/解出的水印.png)|
+``` -->
 
 
 
-### 各种攻击后的效果
+## Python 中使用
+
+原图 + 水印 = 打上水印的图
+
+![origin_image](docs/原图.jpeg) + '@guofei9987 开源万岁！' = ![打上水印的图](docs/打上水印的图.jpg)
 
 
-|攻击方式|攻击后的图片|提取的水印|
-|--|--|--|
-|旋转攻击45度|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
-|多遮挡攻击| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-|横向裁剪50%|![横向裁剪攻击](docs/横向裁剪攻击.jpg)|![](docs/横向裁剪攻击_提取水印.png)|
-|纵向裁剪50%|![纵向裁剪攻击](docs/纵向裁剪攻击.jpg)|![纵向裁剪](docs/纵向裁剪攻击_提取水印.png)|
-|缩放攻击（1200X1920->600X800）|![缩放攻击](docs/缩放攻击.jpg)|![](docs/缩放攻击_提取水印.png)|
-|椒盐攻击|![椒盐攻击](docs/椒盐攻击.jpg)|![](docs/椒盐攻击_提取水印.png)|
-|亮度攻击|![亮度调高攻击](docs/亮度调高攻击.jpg)|![](docs/亮度调高攻击_提取水印.png)|
-
-
-### 嵌入字符串
 
 参考 [代码](/examples/example_str.py)
 
 
-嵌入：
+嵌入水印
 ```python
 from blind_watermark import WaterMark
 
@@ -113,7 +70,8 @@ len_wm = len(bwm1.wm_bit)
 print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
 ```
 
-提取：
+
+提取水印
 ```python
 bwm1 = WaterMark(password_img=1, password_wm=1)
 wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
@@ -121,6 +79,54 @@ print(wm_extract)
 ```
 Output:
 >@guofei9987 开源万岁！
+
+
+### 各种攻击后的效果
+
+|攻击方式|攻击后的图片|提取的水印|
+|--|--|--|
+|旋转攻击45度|![旋转攻击](docs/旋转攻击.jpg)|'@guofei9987 开源万岁！'|
+|随机截图|![截屏攻击](docs/截屏攻击2_还原.jpg)|'@guofei9987 开源万岁！'|
+|多遮挡| ![多遮挡攻击](docs/多遮挡攻击.jpg) |'@guofei9987 开源万岁！'|
+|横向裁剪50%|![横向裁剪攻击](docs/横向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
+|纵向裁剪50%|![纵向裁剪攻击](docs/纵向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
+|缩放攻击|![缩放攻击](docs/缩放攻击.jpg)|'@guofei9987 开源万岁！'|
+|椒盐攻击|![椒盐攻击](docs/椒盐攻击.jpg)|'@guofei9987 开源万岁！'|
+|亮度攻击|![亮度攻击](docs/亮度攻击.jpg)|'@guofei9987 开源万岁！'|
+
+
+
+### 嵌入图片
+
+参考 [代码](/examples/example_str.py)
+
+
+嵌入：
+```python
+from blind_watermark import WaterMark
+
+bwm1 = WaterMark(password_wm=1, password_img=1)
+# read original image
+bwm1.read_img('pic/ori_img.jpg')
+# read watermark
+bwm1.read_wm('pic/watermark.png')
+# embed
+bwm1.embed('output/embedded.png')
+```
+
+提取：
+```python
+bwm1 = WaterMark(password_wm=1, password_img=1)
+# notice that wm_shape is necessary
+bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='output/extracted.png', )
+```
+
+|攻击方式|攻击后的图片|提取的水印|
+|--|--|--|
+|旋转攻击45度|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
+|随机截图|![截屏攻击](docs/截屏攻击2_还原.jpg)|![](docs/旋转攻击_提取水印.png)|
+|多遮挡| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
+
 
 
 ### 隐水印还可以是二进制数据
