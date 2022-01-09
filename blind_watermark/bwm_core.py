@@ -24,7 +24,7 @@ class WaterMarkCore:
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
         self.pool = AutoPool(mode=mode, processes=processes)
 
-        self.fast_mode = True
+        self.fast_mode = False
 
     def init_block_index(self):
         self.block_num = self.ca_block_shape[0] * self.ca_block_shape[1]
@@ -65,7 +65,7 @@ class WaterMarkCore:
         if self.fast_mode:
             return self.block_add_wm_fast(arg)
         else:
-            return self.block_add_wm_slow()
+            return self.block_add_wm_slow(arg)
 
     def block_add_wm_slow(self, arg):
         block, shuffler, i = arg

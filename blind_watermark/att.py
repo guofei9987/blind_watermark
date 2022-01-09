@@ -53,7 +53,7 @@ def cut_att2(input_filename, output_file_name, loc_r=((0.3, 0.1), (0.9, 0.9)), s
     # 剪切攻击
     x1, y1, x2, y2 = w * loc_r[0][0], h * loc_r[0][1], w * loc_r[1][0], h * loc_r[1][1]
     x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-    input_img = input_img[x1:x2, y1:y2]
+    input_img = input_img[y1:y2, x1:x2]
 
     # 缩放攻击
     h, w, _ = input_img.shape
