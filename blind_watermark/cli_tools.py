@@ -1,8 +1,8 @@
 from optparse import OptionParser
 from .blind_watermark import WaterMark
 
-usage1 = 'blind_watermark --embed -p [pwd1]x[pwd2] image.jpg watermark.png embed.png'
-usage2 = 'blind_watermark --extract -p [pwd1]x[pwd2] --wm_shape 128x128 embed.png wm_extract.png'
+usage1 = 'blind_watermark --embed --pwd 1234 image.jpg "watermark text" embed.png'
+usage2 = 'blind_watermark --extract --pwd 1234 --wm_shape 111 embed.png'
 optParser = OptionParser(usage=usage1 + '\n' + usage2)
 
 optParser.add_option('--embed', dest='work_mode', action='store_const', const='embed'
@@ -10,8 +10,8 @@ optParser.add_option('--embed', dest='work_mode', action='store_const', const='e
 optParser.add_option('--extract', dest='work_mode', action='store_const', const='extract'
                      , help='Extract watermark from images')
 
-optParser.add_option('-p', '--pwd', dest='password', help='2 passwords, like 1x1')
-optParser.add_option('--wm_shape', dest='wm_shape', help='Watermark shape, like 128x128')
+optParser.add_option('-p', '--pwd', dest='password', help='password, like 1234')
+optParser.add_option('--wm_shape', dest='wm_shape', help='Watermark shape, like 120')
 
 (opts, args) = optParser.parse_args()
 
@@ -19,8 +19,7 @@ optParser.add_option('--wm_shape', dest='wm_shape', help='Watermark shape, like 
 def main():
     print(opts)
     print(args)
-    p1, p2 = opts.password.split('x')
-    bwm1 = WaterMark(password_wm=int(p1), password_img=int(p2))
+    bwm1 = WaterMark(password_img=int(opts.password))
     if opts.work_mode == 'embed':
         if not len(args) == 3:
             print('Error! Usage: ')
@@ -28,28 +27,29 @@ def main():
             return
         else:
             bwm1.read_img(args[0])
-            bwm1.read_wm(args[1])
+            bwm1.read_wm(args[1], mode='str')
             bwm1.embed(args[2])
             print('Embed succeed! to file ', args[2])
+            print('Put down watermark size:', len(bwm1.wm_bit))
 
     if opts.work_mode == 'extract':
-        if not len(args) == 2:
+        if not len(args) == 1:
             print('Error! Usage: ')
             print(usage2)
             return
 
         else:
-            shape1, shape2 = opts.wm_shape.split('x')
-            bwm1.extract(filename=args[0], wm_shape=(int(shape1), int(shape2)), out_wm_name=args[1])
-            print('Extract succeed! to file ', args[1])
+            wm_str = bwm1.extract(filename=args[0], wm_shape=int(opts.wm_shape), mode='str')
+            print('Extract succeed! watermark is:')
+            print(wm_str)
 
 
 '''
-python -m blind_watermark.cli_tools --embed -p 1x1 examples/pic/ori_img.jpg examples/pic/watermark.png examples/output/embedded.png
-python -m blind_watermark.cli_tools --extract -p 1x1 --wm_shape 128x128 examples/output/embedded.png examples/output/wm_extract.png
+python -m blind_watermark.cli_tools --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
+python -m blind_watermark.cli_tools --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
 
 
 cd examples
-blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
-blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
+blind_watermark --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
+blind_watermark --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
 '''

@@ -57,16 +57,15 @@ pip install .
 # How to use
 
 
-<!-- ### Use in bash
+### Use in bash
 
 
 ```bash
-cd examples
 # embed watermark into image:
-blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
+blind_watermark --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
 # extract watermark from image:
-blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
-``` -->
+blind_watermark --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
+```
 
 
 

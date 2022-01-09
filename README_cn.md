@@ -34,15 +34,14 @@ pip install .
 
 # 如何使用
 
-<!-- ### 命令行中使用
+### 命令行中使用
 
 ```bash
-cd examples
 # 嵌入水印：
-blind_watermark --embed -p 1x1 pic/ori_img.jpg pic/watermark.png output/embedded.png
+blind_watermark --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
 # 提取水印：
-blind_watermark --extract -p 1x1 --wm_shape 128x128 output/embedded.png output/wm_extract.png
-``` -->
+blind_watermark --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
+```
 
 
 
