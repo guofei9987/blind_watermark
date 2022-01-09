@@ -45,21 +45,22 @@ def cut_att(input_filename, output_file_name, loc=((0.3, 0.1), (0.7, 0.9)), resi
     return input_img
 
 
-def cut_att2(input_filename, output_file_name, loc=((0.3, 0.1), (0.9, 0.9)), scale=1.1):
+def cut_att2(input_filename, output_file_name, loc_r=((0.3, 0.1), (0.9, 0.9)), scale=1.1):
     # 截屏攻击 = 剪切攻击 + 缩放攻击 + 不知道攻击参数
     input_img = cv2.imread(input_filename)
     h, w, _ = input_img.shape
 
     # 剪切攻击
-    x1, y1, x2, y2 = w * loc[0][0], h * loc[0][1], w * loc[1][0], h * loc[1][1]
-    input_img = input_img[int(x1):int(x2), int(y1):int(y2)]
+    x1, y1, x2, y2 = w * loc_r[0][0], h * loc_r[0][1], w * loc_r[1][0], h * loc_r[1][1]
+    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+    input_img = input_img[x1:x2, y1:y2]
 
     # 缩放攻击
     h, w, _ = input_img.shape
     input_img = cv2.resize(input_img, dsize=(int(w * scale), int(h * scale)))
 
     cv2.imwrite(output_file_name, input_img)
-    return input_img
+    return input_img, (x1, y1, x2, y2)
 
 
 def anti_cut_att_old(input_filename, output_file_name, origin_shape):

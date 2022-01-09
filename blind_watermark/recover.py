@@ -40,7 +40,43 @@ def search_template(image, template, scale=(0.5, 2), search_num=200):
     return tmp[max_idx]
 
 
-def recover_crop(original_file, template_file, output_file_name, scale=(0.5, 2), search_num=200):
+def estimate_crop_parameters(original_file, template_file, scale=(0.5, 2), search_num=200):
+    # 推测攻击后的图片，在原图片中的位置、大小
+    template = cv2.imread(template_file, cv2.IMREAD_GRAYSCALE)  # template image
+    image = cv2.imread(original_file, cv2.IMREAD_GRAYSCALE)  # image
+
+    ind, score, scale_infer = search_template(image, template, scale=scale, search_num=search_num)
+    w, h = int(template.shape[1] * scale_infer), int(template.shape[0] * scale_infer)
+    x1, y1, x2, y2 = ind[0], ind[1], ind[0] + h, ind[1] + w
+    return (x1, y1, x2, y2), image.shape, score, scale
+
+
+def recover_crop(template_file, output_file_name, loc, image_o_shape):
+    (x1, y1, x2, y2) = loc
+    template_o = cv2.imread(template_file)  # template image
+
+    img_recovery = np.zeros((image_o_shape[0], image_o_shape[1], 3))
+
+    img_recovery[x1:x2, y1:y2, :] = cv2.resize(template_o, dsize=(y2 - y1, x2 - x1))
+
+    cv2.imwrite(output_file_name, img_recovery)
+
+
+def recover_crop2(original_file, template_file, output_file_name, scale=(0.5, 2), search_num=200):
+    template_o = cv2.imread(template_file)  # template image
+
+    (x1, y1, x2, y2), image_o_shape, score, scale_infer = estimate_crop_parameters(original_file, template_file,
+                                                                                   scale=scale,
+                                                                                   search_num=search_num)
+
+    img_recovery = np.zeros((image_o_shape[0], image_o_shape[1], 3))
+
+    img_recovery[x1:x2, y1:y2, :] = cv2.resize(template_o, dsize=(y2 - y1, x2 - x1))
+
+    cv2.imwrite(output_file_name, img_recovery)
+
+
+def recover_crop1(original_file, template_file, output_file_name, scale=(0.5, 2), search_num=200):
     template_o = cv2.imread(template_file)  # template image
     image_o = cv2.imread(original_file)  # image
 

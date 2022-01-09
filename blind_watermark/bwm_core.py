@@ -24,6 +24,8 @@ class WaterMarkCore:
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
         self.pool = AutoPool(mode=mode, processes=processes)
 
+        self.fast_mode = True
+
     def init_block_index(self):
         self.block_num = self.ca_block_shape[0] * self.ca_block_shape[1]
         assert self.wm_size < self.block_num, IndexError(
@@ -60,6 +62,12 @@ class WaterMarkCore:
         self.wm_size = wm_bit.size
 
     def block_add_wm(self, arg):
+        if self.fast_mode:
+            return self.block_add_wm_fast(arg)
+        else:
+            return self.block_add_wm_slow()
+
+    def block_add_wm_slow(self, arg):
         block, shuffler, i = arg
         # dct->(flatten->加密->逆flatten)->svd->打水印->逆svd->(flatten->解密->逆flatten)->逆dct
         wm_1 = self.wm_bit[i % self.wm_size]
@@ -75,6 +83,16 @@ class WaterMarkCore:
         block_dct_flatten = np.dot(U, np.dot(np.diag(s), V)).flatten()
         block_dct_flatten[shuffler] = block_dct_flatten.copy()
         return cv2.idct(block_dct_flatten.reshape(self.block_shape))
+
+    def block_add_wm_fast(self, arg):
+        # dct->svd->打水印->逆svd->逆dct
+        block, shuffler, i = arg
+        wm_1 = self.wm_bit[i % self.wm_size]
+
+        U, s, V = np.linalg.svd(cv2.dct(block))
+        s[0] = (s[0] // self.d1 + 1 / 4 + 1 / 2 * wm_1) * self.d1
+
+        return cv2.idct(np.dot(U, np.dot(np.diag(s), V)))
 
     def embed(self):
         self.init_block_index()
@@ -109,6 +127,12 @@ class WaterMarkCore:
         return embed_img
 
     def block_get_wm(self, args):
+        if self.fast_mode:
+            return self.block_get_wm_fast(args)
+        else:
+            return self.block_get_wm_slow(args)
+
+    def block_get_wm_slow(self, args):
         block, shuffler = args
         # dct->flatten->加密->逆flatten->svd->解水印
         block_dct_shuffled = cv2.dct(block).flatten()[shuffler].reshape(self.block_shape)
@@ -118,6 +142,14 @@ class WaterMarkCore:
         if self.d2:
             tmp = (s[1] % self.d2 > self.d2 / 2) * 1
             wm = (wm * 3 + tmp * 1) / 4
+        return wm
+
+    def block_get_wm_fast(self, args):
+        block, shuffler = args
+        # dct->flatten->加密->逆flatten->svd->解水印
+        U, s, V = np.linalg.svd(cv2.dct(block))
+        wm = (s[0] % self.d1 > self.d1 / 2) * 1
+
         return wm
 
     def extract_raw(self, img):
