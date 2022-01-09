@@ -88,11 +88,12 @@ print(f"遮挡攻击{n}次后的提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%缩放攻击
-att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(800, 600))
+# att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(800, 600))
+att.resize_att('output/embedded.png', 'output/缩放攻击.png', out_shape=(400, 300))
 att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_shape=(1920, 1200))
 # out_shape 是分辨率，需要颠倒一下
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/多遮挡攻击.png', wm_shape=len_wm, mode='str')
+wm_extract = bwm1.extract('output/缩放攻击_还原.png', wm_shape=len_wm, mode='str')
 print("缩放攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'

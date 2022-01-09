@@ -21,8 +21,6 @@ class WaterMarkCore:
         self.ca_block = [np.array([])] * 3  # 每个 channel 存一个四维 array，代表四维分块后的结果
         self.ca_part = [np.array([])] * 3  # 四维分块后，有时因不整除而少一部分，self.ca_part 是少这一部分的 self.ca
 
-        self.alpha = None
-
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
         self.pool = AutoPool(mode=mode, processes=processes)
 
@@ -34,17 +32,8 @@ class WaterMarkCore:
         self.part_shape = self.ca_block_shape[:2] * self.block_shape
         self.block_index = [(i, j) for i in range(self.ca_block_shape[0]) for j in range(self.ca_block_shape[1])]
 
-    def read_img(self, filename):
+    def read_img_arr(self, img):
         # 读入图片->YUV化->加白边使像素变偶数->四维分块
-        img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
-        if img is None:
-            raise IOError("image file '{filename}' not read".format(filename=filename))
-
-        # 处理透明图
-        if img.shape[2] == 4:
-            if img[:, :, 3].min() < 255:
-                self.alpha = img[:, :, 3]
-                img = img[:, :, :3]
 
         self.img = img.astype(np.float32)
         self.img_shape = self.img.shape[:2]
@@ -87,7 +76,7 @@ class WaterMarkCore:
         block_dct_flatten[shuffler] = block_dct_flatten.copy()
         return cv2.idct(block_dct_flatten.reshape(self.block_shape))
 
-    def embed(self, filename):
+    def embed(self):
         self.init_block_index()
 
         embed_ca = copy.deepcopy(self.ca)
@@ -117,10 +106,6 @@ class WaterMarkCore:
         embed_img = cv2.cvtColor(embed_img_YUV, cv2.COLOR_YUV2BGR)
         embed_img = np.clip(embed_img, a_min=0, a_max=255)
 
-        if self.alpha is not None:
-            embed_img = cv2.merge([embed_img.astype(np.uint8), self.alpha])
-
-        cv2.imwrite(filename, embed_img)
         return embed_img
 
     def block_get_wm(self, args):
@@ -135,9 +120,9 @@ class WaterMarkCore:
             wm = (wm * 3 + tmp * 1) / 4
         return wm
 
-    def extract_raw(self, filename):
+    def extract_raw(self, img):
         # 每个分块提取 1 bit 信息
-        self.read_img(filename)
+        self.read_img_arr(img=img)
         self.init_block_index()
 
         wm_block_bit = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
@@ -159,17 +144,17 @@ class WaterMarkCore:
             wm_avg[i] = wm_block_bit[:, i::self.wm_size].mean()
         return wm_avg
 
-    def extract(self, filename, wm_shape):
+    def extract(self, img, wm_shape):
         self.wm_size = np.array(wm_shape).prod()
 
         # 提取每个分块埋入的 bit：
-        wm_block_bit = self.extract_raw(filename=filename)
+        wm_block_bit = self.extract_raw(img=img)
         # 做平均：
         wm_avg = self.extract_avg(wm_block_bit)
         return wm_avg
 
-    def extract_with_kmeans(self, filename, wm_shape):
-        wm_avg = self.extract(filename=filename, wm_shape=wm_shape)
+    def extract_with_kmeans(self, img, wm_shape):
+        wm_avg = self.extract(img=img, wm_shape=wm_shape)
 
         return one_dim_kmeans(wm_avg)
 

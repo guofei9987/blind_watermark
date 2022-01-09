@@ -16,8 +16,23 @@ class WaterMark:
 
         self.password_wm = password_wm
 
+        self.alpha = None  # 用于处理透明图
+
     def read_img(self, filename):
-        self.bwm_core.read_img(filename=filename)
+        # 读入图片
+        img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
+        if img is None:
+            raise IOError("image file '{filename}' not read".format(filename=filename))
+
+        # 处理透明图
+        self.alpha = None
+        if img.shape[2] == 4:
+            if img[:, :, 3].min() < 255:
+                self.alpha = img[:, :, 3]
+                img = img[:, :, :3]
+
+        self.bwm_core.read_img_arr(img=img)
+        return img
 
     def read_img_wm(self, filename):
         wm = cv2.imread(filename)
@@ -46,7 +61,12 @@ class WaterMark:
         self.bwm_core.read_wm(self.wm_bit)
 
     def embed(self, filename):
-        self.bwm_core.embed(filename=filename)
+        embed_img = self.bwm_core.embed()
+        if self.alpha is not None:
+            embed_img = cv2.merge([embed_img.astype(np.uint8), self.alpha])
+
+        cv2.imwrite(filename, embed_img)
+        return embed_img
 
     def extract_decrypt(self, wm_avg):
         wm_index = np.arange(self.wm_size)
@@ -55,12 +75,15 @@ class WaterMark:
         return wm_avg
 
     def extract(self, filename, wm_shape, out_wm_name=None, mode='img'):
+        img = cv2.imread(filename, flags=cv2.IMREAD_COLOR)
+
+
         self.wm_size = np.array(wm_shape).prod()
 
         if mode in ('str', 'bit'):
-            wm_avg = self.bwm_core.extract_with_kmeans(filename=filename, wm_shape=wm_shape)
+            wm_avg = self.bwm_core.extract_with_kmeans(img=img, wm_shape=wm_shape)
         else:
-            wm_avg = self.bwm_core.extract(filename=filename, wm_shape=wm_shape)
+            wm_avg = self.bwm_core.extract(img=img, wm_shape=wm_shape)
 
         # 解密：
         wm = self.extract_decrypt(wm_avg=wm_avg)

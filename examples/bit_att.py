@@ -33,14 +33,14 @@ print("不攻击的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
 # %%截屏攻击
-o1 = (0.2, 0.2)
-o2 = (0.4, 0.5)
 
-att.cut_att('output/embedded.png', 'output/截屏攻击.png', o1=o1, o2=o2)
+loc = ((0.3, 0.1), (0.7, 0.9))
+
+att.cut_att('output/embedded.png', 'output/截屏攻击.png', loc=loc)
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/截屏攻击.png', wm_shape=len_wm, mode='bit')
-print("截屏攻击{o1},{o2}后的提取结果：".format(o1=o1, o2=o2), wm_extract)
+print("截屏攻击{loc}后的提取结果：".format(loc=loc), wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
 # %%
@@ -104,6 +104,6 @@ att.resize_att('output/缩放攻击.png', 'output/缩放攻击_还原.png', out_
 # out_shape 是分辨率，需要颠倒一下
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/多遮挡攻击.png', wm_shape=len_wm, mode='bit')
+wm_extract = bwm1.extract('output/缩放攻击_还原.png', wm_shape=len_wm, mode='bit')
 print("缩放攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
