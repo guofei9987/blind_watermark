@@ -1,6 +1,6 @@
 # blind-watermark
 
-基于小波变换的数字盲水印  
+基于频域的数字盲水印  
 
 
 [![PyPI](https://img.shields.io/pypi/v/blind_watermark)](https://pypi.org/project/blind_watermark/)
@@ -20,8 +20,6 @@
 - **English readme** [README.md](README.md)
 - **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
 
-
-
 # 安装
 ```bash
 pip install blind-watermark
@@ -36,35 +34,29 @@ pip install .
 
 # 如何使用
 
+### 命令行中使用
+
+```bash
+# 嵌入水印：
+blind_watermark --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
+# 提取水印：
+blind_watermark --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
+```
+
+
+
+## Python 中使用
+
+原图 + 水印 = 打上水印的图
+
+![origin_image](https://blindwatermark.github.io/blind_watermark/原图.jpeg) + '@guofei9987 开源万岁！' = ![打上水印的图](https://blindwatermark.github.io/blind_watermark/打上水印的图.jpg)
+
+
+
+参考 [代码](/examples/example_str.py)
+
+
 嵌入水印
-```python
-from blind_watermark import WaterMark
-
-bwm1 = WaterMark(password_wm=1, password_img=1)
-# 读取原图
-bwm1.read_img('pic/ori_img.jpg')
-# 读取水印
-bwm1.read_wm('pic/watermark.png')
-# 打上盲水印
-bwm1.embed('output/打上水印的图.png')
-```
-
-
-提取水印
-```python
-bwm1 = WaterMark(password_wm=1, password_img=1)
-# 注意需要设定水印的长宽wm_shape
-bwm1.extract(filename='output/打上水印的图.png', wm_shape=(128, 128), out_wm_name='output/解出的水印.png', )
-```
-
-## 效果展示
-
-
-![demonstration](https://blindwatermark.github.io/demonstration/demonstration.jpg)
-
-
-### 嵌入字符串
-嵌入：
 ```python
 from blind_watermark import WaterMark
 
@@ -77,7 +69,8 @@ len_wm = len(bwm1.wm_bit)
 print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
 ```
 
-提取：
+
+提取水印
 ```python
 bwm1 = WaterMark(password_img=1, password_wm=1)
 wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
@@ -87,7 +80,58 @@ Output:
 >@guofei9987 开源万岁！
 
 
+### 各种攻击后的效果
+
+|攻击方式|攻击后的图片|提取的水印|
+|--|--|--|
+|旋转攻击45度|![旋转攻击](https://blindwatermark.github.io/blind_watermark/旋转攻击.jpg)|'@guofei9987 开源万岁！'|
+|随机截图|![截屏攻击](https://blindwatermark.github.io/blind_watermark/截屏攻击2_还原.jpg)|'@guofei9987 开源万岁！'|
+|多遮挡| ![多遮挡攻击](https://blindwatermark.github.io/blind_watermark/多遮挡攻击.jpg) |'@guofei9987 开源万岁！'|
+|横向裁剪50%|![横向裁剪攻击](https://blindwatermark.github.io/blind_watermark/横向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
+|纵向裁剪50%|![纵向裁剪攻击](https://blindwatermark.github.io/blind_watermark/纵向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
+|缩放攻击|![缩放攻击](https://blindwatermark.github.io/blind_watermark/缩放攻击.jpg)|'@guofei9987 开源万岁！'|
+|椒盐攻击|![椒盐攻击](https://blindwatermark.github.io/blind_watermark/椒盐攻击.jpg)|'@guofei9987 开源万岁！'|
+|亮度攻击|![亮度攻击](https://blindwatermark.github.io/blind_watermark/亮度攻击.jpg)|'@guofei9987 开源万岁！'|
+
+
+
+### 嵌入图片
+
+参考 [代码](/examples/example_str.py)
+
+
+嵌入：
+```python
+from blind_watermark import WaterMark
+
+bwm1 = WaterMark(password_wm=1, password_img=1)
+# read original image
+bwm1.read_img('pic/ori_img.jpg')
+# read watermark
+bwm1.read_wm('pic/watermark.png')
+# embed
+bwm1.embed('output/embedded.png')
+```
+
+提取：
+```python
+bwm1 = WaterMark(password_wm=1, password_img=1)
+# notice that wm_shape is necessary
+bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='output/extracted.png', )
+```
+
+|攻击方式|攻击后的图片|提取的水印|
+|--|--|--|
+|旋转攻击45度|![旋转攻击](https://blindwatermark.github.io/blind_watermark/旋转攻击.jpg)|![](https://blindwatermark.github.io/blind_watermark/旋转攻击_提取水印.png)|
+|随机截图|![截屏攻击](https://blindwatermark.github.io/blind_watermark/截屏攻击2_还原.jpg)|![](https://blindwatermark.github.io/blind_watermark/旋转攻击_提取水印.png)|
+|多遮挡| ![多遮挡攻击](https://blindwatermark.github.io/blind_watermark/多遮挡攻击.jpg) |![多遮挡_提取水印](https://blindwatermark.github.io/blind_watermark/多遮挡攻击_提取水印.png)|
+
+
+
 ### 隐水印还可以是二进制数据
+
+参考 [代码](/examples/example_bit.py)
+
 
 作为 demo， 如果要嵌入是如下长度为6的二进制数据
 ```python
@@ -121,3 +165,9 @@ print(wm_extract)
 WaterMark(..., processes=None)
 ```
 - `processes`: 整数，指定线程数。默认为 `None`, 表示使用全部线程。
+
+
+## 相关项目
+
+text_blind_watermark: [https://github.com/guofei9987/text_blind_watermark](https://github.com/guofei9987/text_blind_watermark)  
+文本盲水印，把信息隐秘地打入文本.
