@@ -38,10 +38,6 @@ print("截屏攻击={loc}，缩放攻击={resize}，并且知道攻击参数。�
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %% 截屏攻击 = 剪切攻击 + 缩放攻击 + 不知道攻击参数
-import importlib
-
-importlib.reload(att)
-
 loc_r = ((0.1, 0.1), (0.7, 0.6))
 scale = 0.7
 _, (x1, y1, x2, y2) = att.cut_att2('output/embedded.png', 'output/截屏攻击2.png', loc_r=loc_r, scale=scale)
