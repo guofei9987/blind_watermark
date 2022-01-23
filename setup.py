@@ -30,7 +30,7 @@ setup(name='blind_watermark',
       license='MIT',
       packages=find_packages(),
       platforms=['linux', 'windows', 'macos'],
-      install_requires=['numpy', 'opencv-python'],
+      install_requires=['numpy', 'opencv-python', 'PyWavelets'],
       zip_safe=False,
       entry_points={
           'console_scripts': [
