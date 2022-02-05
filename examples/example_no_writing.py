@@ -61,7 +61,7 @@ print(f'Crop attack\'s estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}. sco
 img_recovered = recover_crop(tem_img=img_attacked, loc=(x1, y1, x2, y2), image_o_shape=image_o_shape)
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/截屏攻击2_还原.png', wm_shape=len_wm, mode='str')
+wm_extract = bwm1.extract(embed_img=embed_img, wm_shape=len_wm, mode='str')
 print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 

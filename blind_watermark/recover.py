@@ -50,7 +50,8 @@ def estimate_crop_parameters(original_file=None, template_file=None, ori_img=Non
 
     ind, score, scale_infer = search_template(ori_img, tem_img, scale=scale, search_num=search_num)
     w, h = int(tem_img.shape[1] * scale_infer), int(tem_img.shape[0] * scale_infer)
-    x1, y1, x2, y2 = ind[0], ind[1], ind[0] + h, ind[1] + w
+    # x1, y1, x2, y2 = ind[0], ind[1], ind[0] + h, ind[1] + w
+    x1, y1, x2, y2 = ind[1], ind[0], ind[1] + w, ind[0] + h
     return (x1, y1, x2, y2), ori_img.shape, score, scale
 
 
@@ -62,7 +63,7 @@ def recover_crop(template_file=None, tem_img=None, output_file_name=None, loc=No
 
     img_recovered = np.zeros((image_o_shape[0], image_o_shape[1], 3))
 
-    img_recovered[x1:x2, y1:y2, :] = cv2.resize(tem_img, dsize=(y2 - y1, x2 - x1))
+    img_recovered[y1:y2, x1:x2, :] = cv2.resize(tem_img, dsize=(x2 - x1, y2 - y1))
 
     if output_file_name:
         cv2.imwrite(output_file_name, img_recovered)

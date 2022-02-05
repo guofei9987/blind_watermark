@@ -71,7 +71,7 @@ def cut_att2(input_filename=None, input_img=None, output_file_name=None, loc_r=(
 
     # 缩放攻击
     h, w, _ = output_img.shape
-    input_img = cv2.resize(output_img, dsize=(int(w * scale), int(h * scale)))
+    output_img = cv2.resize(output_img, dsize=(int(w * scale), int(h * scale)))
 
     if output_file_name:
         cv2.imwrite(output_file_name, output_img)
