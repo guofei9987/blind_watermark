@@ -9,17 +9,17 @@ import numpy as np
 
 # %%
 
-bwm1 = WaterMark(password_img=1, password_wm=1)
+bwm = WaterMark(password_img=1, password_wm=1)
 
 # 读取原图
-bwm1.read_img('pic/ori_img.jpeg')
+bwm.read_img('pic/ori_img.jpeg')
 
 # 读取水印
 wm = [True, False, True, False, True, False, True, False, True, False]
-bwm1.read_wm(wm, mode='bit')
+bwm.read_wm(wm, mode='bit')
 
 # 打上盲水印
-bwm1.embed('output/embedded.png')
+bwm.embed('output/embedded.png')
 
 len_wm = len(wm)  # 解水印需要用到长度
 ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击需要知道原图的shape

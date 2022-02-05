@@ -3,13 +3,13 @@
 
 from blind_watermark import WaterMark
 
-bwm1 = WaterMark(password_wm=1, password_img=1)
+bwm = WaterMark(password_wm=1, password_img=1)
 # 读取原图
-bwm1.read_img('pic/ori_img.jpeg')
+bwm.read_img('pic/ori_img.jpeg')
 # 读取水印
-bwm1.read_wm('pic/watermark.png')
+bwm.read_wm('pic/watermark.png')
 # 打上盲水印
-bwm1.embed('output/embedded.png')
+bwm.embed('output/embedded.png')
 
 # %% 解水印
 

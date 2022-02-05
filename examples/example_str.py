@@ -8,13 +8,13 @@ from blind_watermark.recover import estimate_crop_parameters, recover_crop
 
 import cv2
 
-bwm1 = WaterMark(password_img=1, password_wm=1)
-bwm1.read_img('pic/ori_img.jpeg')
+bwm = WaterMark(password_img=1, password_wm=1)
+bwm.read_img('pic/ori_img.jpeg')
 wm = '@guofei9987 开源万岁！'
-bwm1.read_wm(wm, mode='str')
-bwm1.embed('output/embedded.png')
+bwm.read_wm(wm, mode='str')
+bwm.embed('output/embedded.png')
 
-len_wm = len(bwm1.wm_bit)  # 解水印需要用到长度
+len_wm = len(bwm.wm_bit)  # 解水印需要用到长度
 print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
 
 ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击需要知道原图的shape
