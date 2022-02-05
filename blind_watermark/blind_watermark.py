@@ -17,10 +17,14 @@ class WaterMark:
 
         self.password_wm = password_wm
 
-    def read_img(self, filename):
-        # 读入图片
-        img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
-        assert img is not None, "image file '{filename}' not read".format(filename=filename)
+        self.wm_bit = None
+        self.wm_size = 0
+
+    def read_img(self, filename=None, img=None):
+        if filename is not None:
+            # 从文件读入图片
+            img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
+            assert img is not None, "image file '{filename}' not read".format(filename=filename)
 
         self.bwm_core.read_img_arr(img=img)
         return img
@@ -60,15 +64,19 @@ class WaterMark:
         wm_avg[wm_index] = wm_avg.copy()
         return wm_avg
 
-    def extract(self, filename, wm_shape, out_wm_name=None, mode='img'):
-        img = cv2.imread(filename, flags=cv2.IMREAD_COLOR)
+    def extract(self, filename=None, embed_img=None, wm_shape=None, out_wm_name=None, mode='img'):
+        assert wm_shape is not None, 'wm_shape needed'
+
+        if filename is not None:
+            embed_img = cv2.imread(filename, flags=cv2.IMREAD_COLOR)
+            assert embed_img is not None, "{filename} not read".format(filename=filename)
 
         self.wm_size = np.array(wm_shape).prod()
 
         if mode in ('str', 'bit'):
-            wm_avg = self.bwm_core.extract_with_kmeans(img=img, wm_shape=wm_shape)
+            wm_avg = self.bwm_core.extract_with_kmeans(img=embed_img, wm_shape=wm_shape)
         else:
-            wm_avg = self.bwm_core.extract(img=img, wm_shape=wm_shape)
+            wm_avg = self.bwm_core.extract(img=embed_img, wm_shape=wm_shape)
 
         # 解密：
         wm = self.extract_decrypt(wm_avg=wm_avg)

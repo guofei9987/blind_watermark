@@ -5,44 +5,56 @@ import cv2
 import numpy as np
 
 
-def cut_att_height(input_filename, output_file_name, ratio=0.8):
+def cut_att_height(input_filename=None, input_img=None, output_file_name=None, ratio=0.8):
     # 纵向剪切攻击
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     input_img_shape = input_img.shape
     height = int(input_img_shape[0] * ratio)
 
-    cv2.imwrite(output_file_name, input_img[:height, :, :])
+    output_img = input_img[:height, :, :]
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def cut_att_width(input_filename, output_file_name, ratio=0.8):
+def cut_att_width(input_filename=None, input_img=None, output_file_name=None, ratio=0.8):
     # 横向裁剪攻击
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     input_img_shape = input_img.shape
     width = int(input_img_shape[1] * ratio)
 
-    cv2.imwrite(output_file_name, input_img[:, :width, :])
+    output_img = input_img[:, :width, :]
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def cut_att(input_filename, output_file_name, loc=((0.3, 0.1), (0.7, 0.9)), resize=0.6):
+def cut_att(input_filename=None, output_file_name=None, input_img=None, loc=((0.3, 0.1), (0.7, 0.9)), resize=0.6):
     # 截屏攻击 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（按照参数还原）
     # 裁剪攻击：其它部分都补0
-    input_img = cv2.imread(input_filename)
-    shape = input_img.shape
+    if input_filename:
+        input_img = cv2.imread(input_filename)
+    else:
+        output_img = input_img.copy()
+    shape = output_img.shape
     x1, y1, x2, y2 = shape[0] * loc[0][0], shape[1] * loc[0][1], shape[0] * loc[1][0], shape[1] * loc[1][1]
-    input_img[:int(x1), :] = 255
-    input_img[int(x2):, :] = 255
-    input_img[:, :int(y1)] = 255
-    input_img[:, int(y2):] = 255
+    output_img[:int(x1), :] = 255
+    output_img[int(x2):, :] = 255
+    output_img[:, :int(y1)] = 255
+    output_img[:, int(y2):] = 255
 
     # 缩放一次，然后还原
-    input_img = cv2.resize(input_img,
-                           dsize=(int(shape[1] * resize), int(shape[0] * resize))
-                           )
+    output_img = cv2.resize(output_img,
+                            dsize=(int(shape[1] * resize), int(shape[0] * resize))
+                            )
 
-    input_img = cv2.resize(input_img, dsize=(int(shape[1]), int(shape[0])))
+    output_img = cv2.resize(output_img, dsize=(int(shape[1]), int(shape[0])))
 
-    cv2.imwrite(output_file_name, input_img)
-    return input_img
+    if output_file_name is not None:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
 def cut_att2(input_filename, output_file_name, loc_r=((0.3, 0.1), (0.9, 0.9)), scale=1.1):
@@ -84,10 +96,11 @@ def anti_cut_att_old(input_filename, output_file_name, origin_shape):
     cv2.imwrite(output_file_name, output_img)
 
 
-def anti_cut_att(input_filename, output_file_name, origin_shape):
+def anti_cut_att(input_filename=None, input_img=None, output_file_name=None, origin_shape=None):
     # 反裁剪攻击：补0
     # origin_shape 分辨率与约定理解的是颠倒的，约定的是列数*行数
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     output_img = input_img.copy()
     output_img_shape = output_img.shape
     if output_img_shape[0] > origin_shape[0] or output_img_shape[0] > origin_shape[0]:
@@ -106,32 +119,43 @@ def anti_cut_att(input_filename, output_file_name, origin_shape):
             [output_img, 255 * np.ones((output_img_shape[0], origin_shape[1] - output_img_shape[1], 3))]
             , axis=1)
 
-    cv2.imwrite(output_file_name, output_img)
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def resize_att(input_filename, output_file_name, out_shape=(500, 500)):
+def resize_att(input_filename=None, input_img=None, output_file_name=None, out_shape=(500, 500)):
     # 缩放攻击：因为攻击和还原都是缩放，所以攻击和还原都调用这个函数
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     output_img = cv2.resize(input_img, dsize=out_shape)
-    cv2.imwrite(output_file_name, output_img)
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def bright_att(input_filename, output_file_name, ratio=0.8):
+def bright_att(input_filename=None, input_img=None, output_file_name=None, ratio=0.8):
     # 亮度调整攻击，ratio应当多于0
     # ratio>1是调得更亮，ratio<1是亮度更暗
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     output_img = input_img * ratio
     output_img[output_img > 255] = 255
-    cv2.imwrite(output_file_name, output_img)
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def shelter_att(input_filename, output_file_name, ratio=0.1, n=3):
+def shelter_att(input_filename=None, input_img=None, output_file_name=None, ratio=0.1, n=3):
     # 遮挡攻击：遮挡图像中的一部分
     # n个遮挡块
     # 每个遮挡块所占比例为ratio
-    input_img = cv2.imread(input_filename)
-    input_img_shape = input_img.shape
-    output_img = input_img.copy()
+    if input_filename:
+        output_img = cv2.imread(input_filename)
+    else:
+        output_img = input_img.copy()
+    input_img_shape = output_img.shape
+
     for i in range(n):
         tmp = np.random.rand() * (1 - ratio)  # 随机选择一个地方，1-ratio是为了防止溢出
         start_height, end_height = int(tmp * input_img_shape[0]), int((tmp + ratio) * input_img_shape[0])
@@ -140,25 +164,33 @@ def shelter_att(input_filename, output_file_name, ratio=0.1, n=3):
 
         output_img[start_height:end_height, start_width:end_width, :] = 255
 
-    cv2.imwrite(output_file_name, output_img)
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def salt_pepper_att(input_filename, output_file_name, ratio=0.01):
+def salt_pepper_att(input_filename=None, input_img=None, output_file_name=None, ratio=0.01):
     # 椒盐攻击
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     input_img_shape = input_img.shape
     output_img = input_img.copy()
     for i in range(input_img_shape[0]):
         for j in range(input_img_shape[1]):
             if np.random.rand() < ratio:
                 output_img[i, j, :] = 255
-    cv2.imwrite(output_file_name, output_img)
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img
 
 
-def rot_att(input_filename, output_file_name, angle=45):
+def rot_att(input_filename=None, input_img=None, output_file_name=None, angle=45):
     # 旋转攻击
-    input_img = cv2.imread(input_filename)
+    if input_filename:
+        input_img = cv2.imread(input_filename)
     rows, cols, _ = input_img.shape
     M = cv2.getRotationMatrix2D(center=(cols / 2, rows / 2), angle=angle, scale=1)
     output_img = cv2.warpAffine(input_img, M, (cols, rows))
-    cv2.imwrite(output_file_name, output_img)
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img

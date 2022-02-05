@@ -17,7 +17,7 @@ bwm.embed('output/embedded.png')
 len_wm = len(bwm.wm_bit)  # 解水印需要用到长度
 print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
 
-ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击需要知道原图的shape
+ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击有时需要知道原图的shape
 
 # %% 解水印
 bwm1 = WaterMark(password_img=1, password_wm=1)
