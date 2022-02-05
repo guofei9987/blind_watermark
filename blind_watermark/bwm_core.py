@@ -25,6 +25,7 @@ class WaterMarkCore:
         self.pool = AutoPool(mode=mode, processes=processes)
 
         self.fast_mode = False
+        self.alpha = None  # 用于处理透明图
 
     def init_block_index(self):
         self.block_num = self.ca_block_shape[0] * self.ca_block_shape[1]
@@ -35,8 +36,14 @@ class WaterMarkCore:
         self.block_index = [(i, j) for i in range(self.ca_block_shape[0]) for j in range(self.ca_block_shape[1])]
 
     def read_img_arr(self, img):
-        # 读入图片->YUV化->加白边使像素变偶数->四维分块
+        # 处理透明图
+        self.alpha = None
+        if img.shape[2] == 4:
+            if img[:, :, 3].min() < 255:
+                self.alpha = img[:, :, 3]
+                img = img[:, :, :3]
 
+        # 读入图片->YUV化->加白边使像素变偶数->四维分块
         self.img = img.astype(np.float32)
         self.img_shape = self.img.shape[:2]
 
@@ -124,6 +131,8 @@ class WaterMarkCore:
         embed_img = cv2.cvtColor(embed_img_YUV, cv2.COLOR_YUV2BGR)
         embed_img = np.clip(embed_img, a_min=0, a_max=255)
 
+        if self.alpha is not None:
+            embed_img = cv2.merge([embed_img.astype(np.uint8), self.alpha])
         return embed_img
 
     def block_get_wm(self, args):

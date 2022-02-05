@@ -17,28 +17,19 @@ class WaterMark:
 
         self.password_wm = password_wm
 
-        self.alpha = None  # 用于处理透明图
-
     def read_img(self, filename):
         # 读入图片
         img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
-        if img is None:
-            raise IOError("image file '{filename}' not read".format(filename=filename))
-
-        # 处理透明图
-        self.alpha = None
-        if img.shape[2] == 4:
-            if img[:, :, 3].min() < 255:
-                self.alpha = img[:, :, 3]
-                img = img[:, :, :3]
+        assert img is not None, "image file '{filename}' not read".format(filename=filename)
 
         self.bwm_core.read_img_arr(img=img)
         return img
 
     def read_wm(self, wm_content, mode='img'):
+        assert mode in ('img', 'str', 'bit'), "mode in ('img','str','bit')"
         if mode == 'img':
             wm = cv2.imread(filename=wm_content)
-            assert wm is not None, 'file "{filename}" not read'.format(filename=filename)
+            assert wm is not None, 'file "{filename}" not read'.format(filename=wm_content)
 
             # 读入图片格式的水印，并转为一维 bit 格式，抛弃灰度级别
             self.wm_bit = wm[:, :, 0].flatten() > 128
@@ -56,12 +47,11 @@ class WaterMark:
 
         self.bwm_core.read_wm(self.wm_bit)
 
-    def embed(self, filename):
+    def embed(self, filename=None):
         embed_img = self.bwm_core.embed()
-        if self.alpha is not None:
-            embed_img = cv2.merge([embed_img.astype(np.uint8), self.alpha])
 
-        cv2.imwrite(filename, embed_img)
+        if filename is not None:
+            cv2.imwrite(filename, embed_img)
         return embed_img
 
     def extract_decrypt(self, wm_avg):
