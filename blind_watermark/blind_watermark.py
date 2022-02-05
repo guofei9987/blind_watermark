@@ -35,19 +35,14 @@ class WaterMark:
         self.bwm_core.read_img_arr(img=img)
         return img
 
-    def read_img_wm(self, filename):
-        wm = cv2.imread(filename)
-        if wm is None:
-            raise IOError("file '{filename}' not read".format(filename=filename))
-
-        # 读入图片格式的水印，并转为一维 bit 格式
-        self.wm = wm[:, :, 0]
-        # 加密信息只用bit类，抛弃灰度级别
-        self.wm_bit = self.wm.flatten() > 128
-
     def read_wm(self, wm_content, mode='img'):
         if mode == 'img':
-            self.read_img_wm(filename=wm_content)
+            wm = cv2.imread(filename=wm_content)
+            assert wm is not None, 'file "{filename}" not read'.format(filename=filename)
+
+            # 读入图片格式的水印，并转为一维 bit 格式，抛弃灰度级别
+            self.wm_bit = wm[:, :, 0].flatten() > 128
+
         elif mode == 'str':
             byte = bin(int(wm_content.encode('utf-8').hex(), base=16))[2:]
             self.wm_bit = (np.array(list(byte)) == '1')
