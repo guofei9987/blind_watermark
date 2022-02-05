@@ -80,7 +80,7 @@ assert wm == wm_extract, '提取水印和原水印不一致'
 # %% horizontal cut
 r = 0.4
 img_attacked = att.cut_att_height(input_img=embed_img, ratio=r)
-img_recovered = att.anti_cut_att('output/纵向裁剪攻击.png', 'output/纵向裁剪攻击_填补.png', origin_shape=ori_img_shape)
+img_recovered = att.anti_cut_att(input_img=img_attacked, origin_shape=ori_img_shape)
 
 # extract:
 bwm1 = WaterMark(password_wm=1, password_img=1)
