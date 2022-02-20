@@ -3,6 +3,7 @@
 # @Time    : 2021/12/17
 # @Author  : github.com/guofei9987
 import numpy as np
+from numpy.linalg import svd
 import copy
 import cv2
 from pywt import dwt2, idwt2
@@ -82,12 +83,12 @@ class WaterMarkCore:
 
         # 加密（打乱顺序）
         block_dct_shuffled = block_dct.flatten()[shuffler].reshape(self.block_shape)
-        U, s, V = np.linalg.svd(block_dct_shuffled)
+        u, s, v = svd(block_dct_shuffled)
         s[0] = (s[0] // self.d1 + 1 / 4 + 1 / 2 * wm_1) * self.d1
         if self.d2:
             s[1] = (s[1] // self.d2 + 1 / 4 + 1 / 2 * wm_1) * self.d2
 
-        block_dct_flatten = np.dot(U, np.dot(np.diag(s), V)).flatten()
+        block_dct_flatten = np.dot(u, np.dot(np.diag(s), v)).flatten()
         block_dct_flatten[shuffler] = block_dct_flatten.copy()
         return cv2.idct(block_dct_flatten.reshape(self.block_shape))
 
@@ -96,10 +97,10 @@ class WaterMarkCore:
         block, shuffler, i = arg
         wm_1 = self.wm_bit[i % self.wm_size]
 
-        U, s, V = np.linalg.svd(cv2.dct(block))
+        u, s, v = svd(cv2.dct(block))
         s[0] = (s[0] // self.d1 + 1 / 4 + 1 / 2 * wm_1) * self.d1
 
-        return cv2.idct(np.dot(U, np.dot(np.diag(s), V)))
+        return cv2.idct(np.dot(u, np.dot(np.diag(s), v)))
 
     def embed(self):
         self.init_block_index()
@@ -146,7 +147,7 @@ class WaterMarkCore:
         # dct->flatten->加密->逆flatten->svd->解水印
         block_dct_shuffled = cv2.dct(block).flatten()[shuffler].reshape(self.block_shape)
 
-        U, s, V = np.linalg.svd(block_dct_shuffled)
+        u, s, v = svd(block_dct_shuffled)
         wm = (s[0] % self.d1 > self.d1 / 2) * 1
         if self.d2:
             tmp = (s[1] % self.d2 > self.d2 / 2) * 1
@@ -156,7 +157,7 @@ class WaterMarkCore:
     def block_get_wm_fast(self, args):
         block, shuffler = args
         # dct->flatten->加密->逆flatten->svd->解水印
-        U, s, V = np.linalg.svd(cv2.dct(block))
+        u, s, v = svd(cv2.dct(block))
         wm = (s[0] % self.d1 > self.d1 / 2) * 1
 
         return wm
