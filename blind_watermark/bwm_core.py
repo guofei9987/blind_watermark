@@ -6,6 +6,7 @@ import numpy as np
 from numpy.linalg import svd
 import copy
 import cv2
+from cv2 import dct, idct
 from pywt import dwt2, idwt2
 from .pool import AutoPool
 
@@ -79,7 +80,7 @@ class WaterMarkCore:
         block, shuffler, i = arg
         # dct->(flatten->加密->逆flatten)->svd->打水印->逆svd->(flatten->解密->逆flatten)->逆dct
         wm_1 = self.wm_bit[i % self.wm_size]
-        block_dct = cv2.dct(block)
+        block_dct = dct(block)
 
         # 加密（打乱顺序）
         block_dct_shuffled = block_dct.flatten()[shuffler].reshape(self.block_shape)
@@ -90,17 +91,17 @@ class WaterMarkCore:
 
         block_dct_flatten = np.dot(u, np.dot(np.diag(s), v)).flatten()
         block_dct_flatten[shuffler] = block_dct_flatten.copy()
-        return cv2.idct(block_dct_flatten.reshape(self.block_shape))
+        return idct(block_dct_flatten.reshape(self.block_shape))
 
     def block_add_wm_fast(self, arg):
         # dct->svd->打水印->逆svd->逆dct
         block, shuffler, i = arg
         wm_1 = self.wm_bit[i % self.wm_size]
 
-        u, s, v = svd(cv2.dct(block))
+        u, s, v = svd(dct(block))
         s[0] = (s[0] // self.d1 + 1 / 4 + 1 / 2 * wm_1) * self.d1
 
-        return cv2.idct(np.dot(u, np.dot(np.diag(s), v)))
+        return idct(np.dot(u, np.dot(np.diag(s), v)))
 
     def embed(self):
         self.init_block_index()
@@ -145,7 +146,7 @@ class WaterMarkCore:
     def block_get_wm_slow(self, args):
         block, shuffler = args
         # dct->flatten->加密->逆flatten->svd->解水印
-        block_dct_shuffled = cv2.dct(block).flatten()[shuffler].reshape(self.block_shape)
+        block_dct_shuffled = dct(block).flatten()[shuffler].reshape(self.block_shape)
 
         u, s, v = svd(block_dct_shuffled)
         wm = (s[0] % self.d1 > self.d1 / 2) * 1
@@ -157,7 +158,7 @@ class WaterMarkCore:
     def block_get_wm_fast(self, args):
         block, shuffler = args
         # dct->flatten->加密->逆flatten->svd->解水印
-        u, s, v = svd(cv2.dct(block))
+        u, s, v = svd(dct(block))
         wm = (s[0] % self.d1 > self.d1 / 2) * 1
 
         return wm

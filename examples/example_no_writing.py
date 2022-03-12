@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-This shows how to embed and extract without writing files to local file system.
+This demonstrates how to embed and extract without writing files to local file system.
 The format of images is numpy.array.
 This may be useful if you want to use blind-watermark in another project.
 """
