@@ -32,11 +32,11 @@ class WaterMark:
     def read_wm(self, wm_content, mode='img'):
         assert mode in ('img', 'str', 'bit'), "mode in ('img','str','bit')"
         if mode == 'img':
-            wm = cv2.imread(filename=wm_content)
+            wm = cv2.imread(filename=wm_content, flags=cv2.IMREAD_GRAYSCALE)
             assert wm is not None, 'file "{filename}" not read'.format(filename=wm_content)
 
             # 读入图片格式的水印，并转为一维 bit 格式，抛弃灰度级别
-            self.wm_bit = wm[:, :, 0].flatten() > 128
+            self.wm_bit = wm.flatten() > 128
 
         elif mode == 'str':
             byte = bin(int(wm_content.encode('utf-8').hex(), base=16))[2:]
