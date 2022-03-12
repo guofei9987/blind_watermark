@@ -18,4 +18,4 @@ wm_shape = cv2.imread('pic/watermark.png', flags=cv2.IMREAD_GRAYSCALE).shape
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
 # 注意需要设定水印的长宽wm_shape
-bwm1.extract('output/embedded.png', wm_shape=wm_shape, out_wm_name='output/wm_extracted.png', )
+bwm1.extract('output/embedded.png', wm_shape=wm_shape, out_wm_name='output/wm_extracted.png', mode='img')

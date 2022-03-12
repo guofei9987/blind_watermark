@@ -128,7 +128,7 @@ print("缩放攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 # %%
 
-att.bright_att(input_filename='output/embedded.png',output_file_name= 'output/亮度攻击.png', ratio=0.9)
+att.bright_att(input_filename='output/embedded.png', output_file_name='output/亮度攻击.png', ratio=0.9)
 att.bright_att(input_filename='output/亮度攻击.png', output_file_name='output/亮度攻击_还原.png', ratio=1.1)
 wm_extract = bwm1.extract('output/亮度攻击_还原.png', wm_shape=len_wm, mode='str')
 
