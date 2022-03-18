@@ -1,8 +1,28 @@
 import cv2
 import numpy as np
 
+import functools
 
-def match_template(image, template, scale):
+
+# 一个帮助缓存化加速的类，引入事实上的全局变量
+class MyValues:
+    def __init__(self):
+        self.idx = 0
+        self.image = None
+        self.template = None
+
+    def set_val(self, image, template):
+        self.idx += 1
+        self.image = image
+        self.template = template
+
+
+my_value = MyValues()
+
+
+@functools.lru_cache(maxsize=None, typed=False)
+def match_template(scale):
+    image, template = my_value.image, my_value.template
     w, h = int(template.shape[1] * scale), int(template.shape[0] * scale)
     resized = cv2.resize(template, dsize=(w, h))
     res = cv2.matchTemplate(image, resized, cv2.TM_CCOEFF_NORMED)
@@ -10,7 +30,8 @@ def match_template(image, template, scale):
     return ind, res[ind], scale
 
 
-def search_template(image, template, scale=(0.5, 2), search_num=200):
+def search_template(scale=(0.5, 2), search_num=200):
+    image, template = my_value.image, my_value.template
     # 局部暴力搜索算法，寻找最优的scale
     tmp = []
     min_scale, max_scale = scale
@@ -21,7 +42,7 @@ def search_template(image, template, scale=(0.5, 2), search_num=200):
 
     for i in range(2):
         for scale in np.linspace(min_scale, max_scale, search_num):
-            ind, score, scale = match_template(image, template, scale)
+            ind, score, scale = match_template(scale)
             tmp.append([ind, score, scale])
 
         # 寻找最佳
@@ -36,6 +57,7 @@ def search_template(image, template, scale=(0.5, 2), search_num=200):
         # search_num = (max_scale - min_scale) * max(template.shape[1], template.shape[0])
         # search_num = int(search_num+1)
         search_num = 6
+        # search_num = 200
 
     return tmp[max_idx]
 
@@ -48,7 +70,8 @@ def estimate_crop_parameters(original_file=None, template_file=None, ori_img=Non
     if original_file:
         ori_img = cv2.imread(original_file, cv2.IMREAD_GRAYSCALE)  # image
 
-    ind, score, scale_infer = search_template(ori_img, tem_img, scale=scale, search_num=search_num)
+    my_value.set_val(image=ori_img, template=tem_img)
+    ind, score, scale_infer = search_template(scale=scale, search_num=search_num)
     w, h = int(tem_img.shape[1] * scale_infer), int(tem_img.shape[0] * scale_infer)
     # x1, y1, x2, y2 = ind[0], ind[1], ind[0] + h, ind[1] + w
     x1, y1, x2, y2 = ind[1], ind[0], ind[1] + w, ind[0] + h
