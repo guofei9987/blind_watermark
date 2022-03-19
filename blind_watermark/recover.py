@@ -8,26 +8,30 @@ import functools
 class MyValues:
     def __init__(self):
         self.idx = 0
-        self.image = None
-        self.template = None
+        self.image, self.template = None, None
 
     def set_val(self, image, template):
         self.idx += 1
-        self.image = image
-        self.template = template
+        self.image, self.template = image, template
 
 
 my_value = MyValues()
 
 
 @functools.lru_cache(maxsize=None, typed=False)
-def match_template(scale):
+def match_template(w, h, idx):
     image, template = my_value.image, my_value.template
-    w, h = int(template.shape[1] * scale), int(template.shape[0] * scale)
     resized = cv2.resize(template, dsize=(w, h))
-    res = cv2.matchTemplate(image, resized, cv2.TM_CCOEFF_NORMED)
-    ind = np.unravel_index(np.argmax(res, axis=None), res.shape)
-    return ind, res[ind], scale
+    scores = cv2.matchTemplate(image, resized, cv2.TM_CCOEFF_NORMED)
+    ind = np.unravel_index(np.argmax(scores, axis=None), scores.shape)
+    return ind, scores[ind]
+
+
+def match_template_by_scale(scale):
+    image, template = my_value.image, my_value.template
+    w, h = int(np.round(template.shape[1] * scale)), int(template.shape[0] * scale)
+    ind, score = match_template(w, h, idx=my_value.idx)
+    return ind, score, scale
 
 
 def search_template(scale=(0.5, 2), search_num=200):
@@ -42,7 +46,7 @@ def search_template(scale=(0.5, 2), search_num=200):
 
     for i in range(2):
         for scale in np.linspace(min_scale, max_scale, search_num):
-            ind, score, scale = match_template(scale)
+            ind, score, scale = match_template_by_scale(scale)
             tmp.append([ind, score, scale])
 
         # 寻找最佳
@@ -54,10 +58,7 @@ def search_template(scale=(0.5, 2), search_num=200):
 
         min_scale, max_scale = tmp[max(0, max_idx - 1)][2], tmp[max(0, max_idx + 1)][2]
 
-        # search_num = (max_scale - min_scale) * max(template.shape[1], template.shape[0])
-        # search_num = int(search_num+1)
-        search_num = 6
-        # search_num = 200
+        search_num = 2 * int((max_scale - min_scale) * max(template.shape[1], template.shape[0])) + 1
 
     return tmp[max_idx]
 
@@ -75,7 +76,7 @@ def estimate_crop_parameters(original_file=None, template_file=None, ori_img=Non
     w, h = int(tem_img.shape[1] * scale_infer), int(tem_img.shape[0] * scale_infer)
     # x1, y1, x2, y2 = ind[0], ind[1], ind[0] + h, ind[1] + w
     x1, y1, x2, y2 = ind[1], ind[0], ind[1] + w, ind[0] + h
-    return (x1, y1, x2, y2), ori_img.shape, score, scale
+    return (x1, y1, x2, y2), ori_img.shape, score, scale_infer
 
 
 def recover_crop(template_file=None, tem_img=None, output_file_name=None, loc=None, image_o_shape=None):
@@ -91,36 +92,3 @@ def recover_crop(template_file=None, tem_img=None, output_file_name=None, loc=No
     if output_file_name:
         cv2.imwrite(output_file_name, img_recovered)
     return img_recovered
-
-
-def recover_crop2(original_file, template_file, output_file_name, scale=(0.5, 2), search_num=200):
-    template_o = cv2.imread(template_file)  # template image
-
-    (x1, y1, x2, y2), image_o_shape, score, scale_infer = estimate_crop_parameters(original_file, template_file,
-                                                                                   scale=scale,
-                                                                                   search_num=search_num)
-
-    img_recovery = np.zeros((image_o_shape[0], image_o_shape[1], 3))
-
-    img_recovery[x1:x2, y1:y2, :] = cv2.resize(template_o, dsize=(y2 - y1, x2 - x1))
-
-    cv2.imwrite(output_file_name, img_recovery)
-
-
-def recover_crop1(original_file, template_file, output_file_name, scale=(0.5, 2), search_num=200):
-    template_o = cv2.imread(template_file)  # template image
-    image_o = cv2.imread(original_file)  # image
-
-    # 推测位置、大小
-    template = cv2.cvtColor(template_o, cv2.COLOR_BGR2GRAY)
-    image = cv2.cvtColor(image_o, cv2.COLOR_BGR2GRAY)
-    ind, score, scale_infer = search_template(image, template, scale=(0.5, 2), search_num=200)
-
-    w, h = int(template.shape[1] * scale_infer), int(template.shape[0] * scale_infer)
-
-    img_recovery = np.zeros_like(image_o)
-
-    img_recovery[ind[0]:ind[0] + h, ind[1]:ind[1] + w, :] = cv2.resize(template_o, dsize=(w, h))
-
-    cv2.imwrite(output_file_name, img_recovery)
-    return ind, score, scale_infer
