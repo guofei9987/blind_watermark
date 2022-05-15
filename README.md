@@ -155,7 +155,7 @@ bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='o
 See it [here](/examples/example_bit.py)
 
 
-As demo, we embed 6 bytes data:
+As demo, we embed 6 bits of data:
 ```python
 wm = [True, False, True, True, True, False]
 ```
