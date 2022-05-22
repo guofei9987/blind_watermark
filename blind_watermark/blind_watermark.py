@@ -23,7 +23,7 @@ class WaterMark:
         self.wm_size = 0
 
     def read_img(self, filename=None, img=None):
-        if filename is not None:
+        if img is None:
             # 从文件读入图片
             img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
             assert img is not None, "image file '{filename}' not read".format(filename=filename)
@@ -53,11 +53,26 @@ class WaterMark:
 
         self.bwm_core.read_wm(self.wm_bit)
 
-    def embed(self, filename=None):
+    def embed(self, filename=None, compression_ratio=100):
+        '''
+        :param filename: string
+            Save the image file as filename
+        :param compression_ratio: int or None
+            If compression_ratio = None, do not compression,
+            If compression_ratio is integer between 0 and 100, the smaller, the output file is smaller.
+        :return:
+        '''
         embed_img = self.bwm_core.embed()
 
         if filename is not None:
-            cv2.imwrite(filename, embed_img)
+            if compression_ratio is None:
+                cv2.imwrite(filename=filename, img=embed_img)
+            elif filename.endswith('.jpg'):
+                cv2.imwrite(filename=filename, img=embed_img, params=[cv2.IMWRITE_JPEG_QUALITY, compression_ratio])
+            elif filename.endswith('.png'):
+                cv2.imwrite(filename=filename, img=embed_img, params=[cv2.IMWRITE_PNG_COMPRESSION, compression_ratio])
+            else:
+                cv2.imwrite(filename=filename, img=embed_img)
         return embed_img
 
     def extract_decrypt(self, wm_avg):
