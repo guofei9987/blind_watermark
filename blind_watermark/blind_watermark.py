@@ -63,15 +63,15 @@ class WaterMark:
         :return:
         '''
         embed_img = self.bwm_core.embed()
-
-        if compression_ratio is None:
-            cv2.imencode('', img=embed_img)[1].tofile(filename)
-        elif filename.endswith('.jpg'):
-            cv2.imencode('.jpg', img=embed_img, params=[cv2.IMWRITE_JPEG_QUALITY, compression_ratio])[1].tofile(filename)
-        elif filename.endswith('.png'):
-            cv2.imencode('.png', img=embed_img, params=[cv2.IMWRITE_PNG_COMPRESSION, 0])[1].tofile(filename)
-        else:
-            cv2.imencode('', img=embed_img)[1].tofile(filename)
+        if filename is not None:
+            if compression_ratio is None:
+                cv2.imencode('', img=embed_img)[1].tofile(filename)
+            elif filename.endswith('.jpg'):
+                cv2.imencode('.jpg', img=embed_img, params=[cv2.IMWRITE_JPEG_QUALITY, compression_ratio])[1].tofile(filename)
+            elif filename.endswith('.png'):
+                cv2.imencode('.png', img=embed_img, params=[cv2.IMWRITE_PNG_COMPRESSION, 0])[1].tofile(filename)
+            else:
+                cv2.imencode('', img=embed_img)[1].tofile(filename)
         return embed_img
 
     def extract_decrypt(self, wm_avg):
