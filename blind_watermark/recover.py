@@ -56,7 +56,7 @@ def search_template(scale=(0.5, 2), search_num=200):
             if score > max_score:
                 max_idx, max_score = idx, score
 
-        min_scale, max_scale = tmp[max(0, max_idx - 1)][2], tmp[max(0, max_idx + 1)][2]
+        min_scale, max_scale = tmp[max(0, max_idx - 1)][2], tmp[min(len(tmp)-1, max_idx + 1)][2]
 
         search_num = 2 * int((max_scale - min_scale) * max(template.shape[1], template.shape[0])) + 1
 
