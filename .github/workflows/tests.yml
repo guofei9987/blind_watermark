@@ -17,8 +17,7 @@ jobs:
       - name: Install requirements
         run: |
           pip install -r requirements.txt
-          pip install -U pytest
-          pip install coverage codecov
+          pip install pytest-cover
       - name: Run tests and collect coverage
         run: pytest --cov .
       - name: Upload coverage reports to Codecov with GitHub Action
