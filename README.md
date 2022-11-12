@@ -186,7 +186,7 @@ The output `wm_extract` is an array of float. set a threshold such as 0.5.
 ```python
 WaterMark(..., processes=None)
 ```
-- `processes`: number of processes, can be integer. Default `None`, meaning use all processes.  
+- `processes` number of processes, can be integer. Default `None`, which means using all processes.  
 
 ## Related Project
 
