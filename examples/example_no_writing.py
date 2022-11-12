@@ -11,7 +11,9 @@ from blind_watermark import att
 from blind_watermark.recover import estimate_crop_parameters, recover_crop
 import cv2
 import numpy as np
+import os
 
+os.chdir(os.path.dirname(__file__))
 ori_img = cv2.imread('pic/ori_img.jpeg', flags=cv2.IMREAD_UNCHANGED)
 wm = '@guofei9987 开源万岁！'
 ori_img_shape = ori_img.shape[:2]  # 抗攻击有时需要知道原图的shape

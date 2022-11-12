@@ -5,8 +5,10 @@ import numpy as np
 from blind_watermark import WaterMark
 from blind_watermark import att
 from blind_watermark.recover import estimate_crop_parameters, recover_crop
-
 import cv2
+import os
+
+os.chdir(os.path.dirname(__file__))
 
 bwm = WaterMark(password_img=1, password_wm=1)
 bwm.read_img('pic/ori_img.jpeg')

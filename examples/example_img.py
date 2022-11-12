@@ -3,7 +3,9 @@
 import cv2
 
 from blind_watermark import WaterMark
+import os
 
+os.chdir(os.path.dirname(__file__))
 bwm = WaterMark(password_wm=1, password_img=1)
 # 读取原图
 bwm.read_img(filename='pic/ori_img.jpeg')

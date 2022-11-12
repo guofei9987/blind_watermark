@@ -6,6 +6,9 @@ from blind_watermark import WaterMark
 import cv2
 from blind_watermark import WaterMarkCore
 import numpy as np
+import os
+
+os.chdir(os.path.dirname(__file__))
 
 # %%
 
