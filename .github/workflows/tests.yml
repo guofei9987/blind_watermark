@@ -8,7 +8,7 @@ jobs:
     name: Test python API
     defaults:
       run:
-        working-directory: ./api
+        working-directory: .
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v2
