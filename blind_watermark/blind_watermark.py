@@ -53,7 +53,7 @@ class WaterMark:
 
         self.bwm_core.read_wm(self.wm_bit)
 
-    def embed(self, filename=None, compression_ratio=100):
+    def embed(self, filename=None, compression_ratio=None):
         '''
         :param filename: string
             Save the image file as filename
