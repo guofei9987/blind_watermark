@@ -74,7 +74,6 @@ def estimate_crop_parameters(original_file=None, template_file=None, ori_img=Non
     my_value.set_val(image=ori_img, template=tem_img)
     ind, score, scale_infer = search_template(scale=scale, search_num=search_num)
     w, h = int(tem_img.shape[1] * scale_infer), int(tem_img.shape[0] * scale_infer)
-    # x1, y1, x2, y2 = ind[0], ind[1], ind[0] + h, ind[1] + w
     x1, y1, x2, y2 = ind[1], ind[0], ind[1] + w, ind[0] + h
     return (x1, y1, x2, y2), ori_img.shape, score, scale_infer
 
