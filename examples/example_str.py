@@ -28,7 +28,7 @@ print("不攻击的提取结果：", wm_extract)
 
 assert wm == wm_extract, '提取水印和原水印不一致'
 
-# %%截屏攻击 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（按照参数还原）
+# %%截屏攻击 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（严格按照参数还原）
 
 loc = ((0.1, 0.1), (0.5, 0.5))
 resize = 0.7
@@ -61,6 +61,14 @@ bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/截屏攻击2_还原.png', wm_shape=len_wm, mode='str')
 print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
+
+# %% 随机裁剪攻击 = 随机位置裁剪 + 不知道攻击参数
+
+
+_, (x1, y1, x2, y2) = att.cut_att2(input_filename='output/embedded.png', output_file_name='output/随机裁剪攻击.png',
+                                   loc_r=loc_r, scale=None)
+
+
 
 # %% Vertical cut
 r = 0.3
@@ -128,7 +136,7 @@ bwm1 = WaterMark(password_wm=1, password_img=1)
 wm_extract = bwm1.extract('output/缩放攻击_还原.png', wm_shape=len_wm, mode='str')
 print("缩放攻击后的提取结果：", wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
-# %%
+# %%亮度攻击
 
 att.bright_att(input_filename='output/embedded.png', output_file_name='output/亮度攻击.png', ratio=0.9)
 att.bright_att(input_filename='output/亮度攻击.png', output_file_name='output/亮度攻击_还原.png', ratio=1.1)

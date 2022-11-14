@@ -45,12 +45,13 @@ def cut_att(input_filename=None, output_file_name=None, input_img=None, loc=((0.
     output_img[:, :int(y1)] = 255
     output_img[:, int(y2):] = 255
 
-    # 缩放一次，然后还原
-    output_img = cv2.resize(output_img,
-                            dsize=(int(shape[1] * resize), int(shape[0] * resize))
-                            )
+    if resize is not None:
+        # 缩放一次，然后还原
+        output_img = cv2.resize(output_img,
+                                dsize=(int(shape[1] * resize), int(shape[0] * resize))
+                                )
 
-    output_img = cv2.resize(output_img, dsize=(int(shape[1]), int(shape[0])))
+        output_img = cv2.resize(output_img, dsize=(int(shape[1]), int(shape[0])))
 
     if output_file_name is not None:
         cv2.imwrite(output_file_name, output_img)
@@ -70,8 +71,8 @@ def cut_att2(input_filename=None, input_img=None, output_file_name=None, loc_r=(
     output_img = output_img[y1:y2, x1:x2]
 
     # 缩放攻击
-    h, w, _ = output_img.shape
-    output_img = cv2.resize(output_img, dsize=(int(w * scale), int(h * scale)))
+    if scale is not None:
+        output_img = cv2.resize(output_img, dsize=(int(w * scale), int(h * scale)))
 
     if output_file_name:
         cv2.imwrite(output_file_name, output_img)
