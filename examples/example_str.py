@@ -51,7 +51,8 @@ print(f'Crop attack\'s real parameters: x1={x1},y1={y1},x2={x2},y2={y2}')
                                                                                template_file='output/截屏攻击2.png',
                                                                                scale=(0.5, 2), search_num=200)
 
-print(f'Crop attack\'s estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}. score={score}')
+print(
+    f'Crop attack\'s estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}, scale_infer = {scale_infer}. score={score}')
 
 # recover from attack:
 recover_crop(template_file='output/截屏攻击2.png', output_file_name='output/截屏攻击2_还原.png',
@@ -63,26 +64,27 @@ print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %% 随机裁剪攻击 = 随机位置裁剪 + 不知道攻击参数
-
-loc_r = ((0.1, 0.1), (0.7, 0.6))
+loc_r = ((0.1, 0.1), (0.4, 0.8))
 
 _, (x1, y1, x2, y2) = att.cut_att2(input_filename='output/embedded.png', output_file_name='output/随机裁剪攻击.png',
                                    loc_r=loc_r, scale=None)
 
+print(f'Cut attack\'s real parameters: x1={x1},y1={y1},x2={x2},y2={y2}')
+
 # estimate crop attack parameters:
 (x1, y1, x2, y2), image_o_shape, score, scale_infer = estimate_crop_parameters(original_file='output/embedded.png',
-                                                                               template_file='output/截屏攻击2.png',
-                                                                               scale=(0.5, 2), search_num=200)
+                                                                               template_file='output/随机裁剪攻击.png',
+                                                                               scale=(1, 1), search_num=None)
 
-print(f'Crop attack\'s estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}. score={score}')
+print(f'Cut attack\'s estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}. score={score}')
 
 # recover from attack:
-recover_crop(template_file='output/截屏攻击2.png', output_file_name='output/截屏攻击2_还原.png',
+recover_crop(template_file='output/随机裁剪攻击.png', output_file_name='output/随机裁剪攻击_还原.png',
              loc=(x1, y1, x2, y2), image_o_shape=image_o_shape)
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/截屏攻击2_还原.png', wm_shape=len_wm, mode='str')
-print("裁剪攻击，不知道攻击参数。提取结果：", wm_extract)
+wm_extract = bwm1.extract('output/随机裁剪攻击_还原.png', wm_shape=len_wm, mode='str')
+print("随机裁剪攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %% Vertical cut
