@@ -64,7 +64,7 @@ print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %% 随机裁剪攻击 = 随机位置裁剪 + 不知道攻击参数
-loc_r = ((0.1, 0.1), (0.4, 0.8))
+loc_r = ((0.1, 0.1), (0.5, 0.4))
 
 _, (x1, y1, x2, y2) = att.cut_att2(input_filename='output/embedded.png', output_file_name='output/随机裁剪攻击.png',
                                    loc_r=loc_r, scale=None)
