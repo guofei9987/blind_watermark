@@ -56,7 +56,7 @@ def search_template(scale=(0.5, 2), search_num=200):
             if score > max_score:
                 max_idx, max_score = idx, score
 
-        min_scale, max_scale = tmp[max(0, max_idx - 1)][2], tmp[min(len(tmp)-1, max_idx + 1)][2]
+        min_scale, max_scale = tmp[max(0, max_idx - 1)][2], tmp[min(len(tmp) - 1, max_idx + 1)][2]
 
         search_num = 2 * int((max_scale - min_scale) * max(template.shape[1], template.shape[0])) + 1
 
@@ -71,8 +71,14 @@ def estimate_crop_parameters(original_file=None, template_file=None, ori_img=Non
     if original_file:
         ori_img = cv2.imread(original_file, cv2.IMREAD_GRAYSCALE)  # image
 
-    my_value.set_val(image=ori_img, template=tem_img)
-    ind, score, scale_infer = search_template(scale=scale, search_num=search_num)
+    if scale[0] == scale[1] == 1:
+        scale_infer = 1
+        scores = cv2.matchTemplate(ori_img, tem_img, cv2.TM_CCOEFF_NORMED)
+        ind = np.unravel_index(np.argmax(scores, axis=None), scores.shape)
+        ind, score = ind, scores[ind]
+    else:
+        my_value.set_val(image=ori_img, template=tem_img)
+        ind, score, scale_infer = search_template(scale=scale, search_num=search_num)
     w, h = int(tem_img.shape[1] * scale_infer), int(tem_img.shape[0] * scale_infer)
     x1, y1, x2, y2 = ind[1], ind[0], ind[1] + w, ind[0] + h
     return (x1, y1, x2, y2), ori_img.shape, score, scale_infer
