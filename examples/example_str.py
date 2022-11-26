@@ -36,7 +36,7 @@ scale = 0.7
 
 x1, y1, x2, y2 = int(w * loc_r[0][0]), int(h * loc_r[0][1]), int(w * loc_r[1][0]), int(h * loc_r[1][1])
 
-# 剪切攻击
+# 截屏攻击
 att.cut_att3(input_filename='output/embedded.png', output_file_name='output/截屏攻击1.png',
              loc=(x1, y1, x2, y2), scale=scale)
 
@@ -63,8 +63,7 @@ att.cut_att3(input_filename='output/embedded.png', output_file_name='output/截�
                                                                                template_file='output/截屏攻击2.png',
                                                                                scale=(0.5, 2), search_num=200)
 
-print(
-    f'Crop attack\'s estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}, scale_infer = {scale_infer}. score={score}')
+print(f'Crop att estimate parameters: x1={x1},y1={y1},x2={x2},y2={y2}, scale_infer = {scale_infer}. score={score}')
 
 # recover from attack:
 recover_crop(template_file='output/截屏攻击2.png', output_file_name='output/截屏攻击2_还原.png',
@@ -76,7 +75,7 @@ print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
 # %%裁剪攻击1 = 裁剪 + 不做缩放 + 知道攻击参数
-loc_r = ((0.1, 0.1), (0.5, 0.4))
+loc_r = ((0.1, 0.2), (0.5, 0.5))
 x1, y1, x2, y2 = int(w * loc_r[0][0]), int(h * loc_r[0][1]), int(w * loc_r[1][0]), int(h * loc_r[1][1])
 
 att.cut_att3(input_filename='output/embedded.png', output_file_name='output/随机裁剪攻击.png',

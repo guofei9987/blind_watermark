@@ -4,7 +4,7 @@
 from blind_watermark import att
 from blind_watermark import WaterMark
 import cv2
-from blind_watermark import WaterMarkCore
+from blind_watermark.recover import estimate_crop_parameters, recover_crop
 import numpy as np
 import os
 
@@ -26,6 +26,7 @@ bwm.embed('output/embedded.png')
 
 len_wm = len(wm)  # 解水印需要用到长度
 ori_img_shape = cv2.imread('pic/ori_img.jpeg').shape[:2]  # 抗攻击需要知道原图的shape
+h, w = ori_img_shape
 
 # %% 解水印
 
@@ -47,32 +48,26 @@ wm_extract = bwm1.extract('output/截屏攻击.png', wm_shape=len_wm, mode='bit'
 print("截屏攻击{loc}后的提取结果：".format(loc=loc), wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
-# %%
-# 一次横向裁剪打击
-r = 0.2
-att.cut_att_width(input_filename='output/embedded.png', output_file_name='output/横向裁剪攻击.png', ratio=r)
-att.anti_cut_att(input_filename='output/横向裁剪攻击.png', output_file_name='output/横向裁剪攻击_填补.png',
-                 origin_shape=ori_img_shape)
 
-# 提取水印
+# %%截屏攻击1 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（之后按照参数还原）
+
+loc_r = ((0.1, 0.1), (0.5, 0.5))
+scale = 0.7
+
+x1, y1, x2, y2 = int(w * loc_r[0][0]), int(h * loc_r[0][1]), int(w * loc_r[1][0]), int(h * loc_r[1][1])
+
+# 截屏攻击
+att.cut_att3(input_filename='output/embedded.png', output_file_name='output/截屏攻击1.png',
+             loc=(x1, y1, x2, y2), scale=scale)
+
+recover_crop(template_file='output/截屏攻击1.png', output_file_name='output/截屏攻击1_还原.png',
+             loc=(x1, y1, x2, y2), image_o_shape=ori_img_shape)
+
 bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/横向裁剪攻击_填补.png', wm_shape=len_wm, mode='bit')
-print(f"横向裁剪攻击r={r}后的提取结果：", wm_extract)
-
+wm_extract = bwm1.extract('output/截屏攻击1_还原.png', wm_shape=len_wm, mode='bit')
+print("截屏攻击{loc}后的提取结果：".format(loc=loc), wm_extract)
 assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 
-# %%一次纵向裁剪攻击
-ratio = 0.2
-att.cut_att_height(input_filename='output/embedded.png', output_file_name='output/纵向裁剪攻击.png', ratio=ratio)
-att.anti_cut_att(input_filename='output/纵向裁剪攻击.png', output_file_name='output/纵向裁剪攻击_填补.png',
-                 origin_shape=ori_img_shape)
-
-# 提取
-bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/纵向裁剪攻击_填补.png', wm_shape=len_wm, mode='bit')
-print(f"纵向裁剪攻击ratio={ratio}后的提取结果：", wm_extract)
-
-assert np.all(wm == wm_extract), '提取水印和原水印不一致'
 # %%椒盐攻击
 ratio = 0.05
 att.salt_pepper_att(input_filename='output/embedded.png', output_file_name='output/椒盐攻击.png', ratio=ratio)
