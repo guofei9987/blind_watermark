@@ -28,18 +28,22 @@ print("不攻击的提取结果：", wm_extract)
 
 assert wm == wm_extract, '提取水印和原水印不一致'
 
-# %%截屏攻击 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（按照参数还原）
+# %%截屏攻击1 = 裁剪攻击 + 缩放攻击 + 知道攻击参数（之后按照参数还原）
 
-loc = ((0.1, 0.1), (0.5, 0.5))
-resize = 0.7
-att.cut_att(input_filename='output/embedded.png', output_file_name='output/截屏攻击.png', loc=loc, resize=resize)
+loc_r = ((0.1, 0.1), (0.5, 0.5))
+scale = 0.7
+_, (x1, y1, x2, y2) = att.cut_att2(input_filename='output/embedded.png', output_file_name='output/截屏攻击1.png',
+                                   loc_r=loc_r, scale=scale)
+
+recover_crop(template_file='output/截屏攻击1.png', output_file_name='output/截屏攻击1_还原.png',
+             loc=(x1, y1, x2, y2), image_o_shape=ori_img_shape)
 
 bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/截屏攻击.png', wm_shape=len_wm, mode='str')
-print("截屏攻击={loc}，缩放攻击={resize}，并且知道攻击参数。提取结果：".format(loc=loc, resize=resize), wm_extract)
+wm_extract = bwm1.extract('output/截屏攻击1_还原.png', wm_shape=len_wm, mode='str')
+print("截屏攻击，知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
-# %% 截屏攻击 = 剪切攻击 + 缩放攻击 + 不知道攻击参数
+# %% 截屏攻击2 = 剪切攻击 + 缩放攻击 + 不知道攻击参数
 loc_r = ((0.1, 0.1), (0.7, 0.6))
 scale = 0.7
 _, (x1, y1, x2, y2) = att.cut_att2(input_filename='output/embedded.png', output_file_name='output/截屏攻击2.png',
@@ -63,7 +67,7 @@ wm_extract = bwm1.extract('output/截屏攻击2_还原.png', wm_shape=len_wm, mo
 print("截屏攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
-# %% 随机裁剪攻击 = 随机位置裁剪 + 不知道攻击参数
+# %% 裁剪攻击 = 裁剪 + 不做缩放 + 不知道攻击参数
 loc_r = ((0.1, 0.1), (0.5, 0.4))
 
 _, (x1, y1, x2, y2) = att.cut_att2(input_filename='output/embedded.png', output_file_name='output/随机裁剪攻击.png',
@@ -87,31 +91,6 @@ wm_extract = bwm1.extract('output/随机裁剪攻击_还原.png', wm_shape=len_w
 print("随机裁剪攻击，不知道攻击参数。提取结果：", wm_extract)
 assert wm == wm_extract, '提取水印和原水印不一致'
 
-# %% Vertical cut
-r = 0.3
-att.cut_att_width(input_filename='output/embedded.png', output_file_name='output/横向裁剪攻击.png', ratio=r)
-att.anti_cut_att(input_filename='output/横向裁剪攻击.png', output_file_name='output/横向裁剪攻击_填补.png',
-                 origin_shape=ori_img_shape)
-
-# 提取水印
-bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/横向裁剪攻击_填补.png', wm_shape=len_wm, mode='str')
-print(f"横向裁剪攻击r={r}后的提取结果：", wm_extract)
-
-assert wm == wm_extract, '提取水印和原水印不一致'
-
-# %% horizontal cut
-r = 0.4
-att.cut_att_height(input_filename='output/embedded.png', output_file_name='output/纵向裁剪攻击.png', ratio=r)
-att.anti_cut_att(input_filename='output/纵向裁剪攻击.png', output_file_name='output/纵向裁剪攻击_填补.png',
-                 origin_shape=ori_img_shape)
-
-# extract:
-bwm1 = WaterMark(password_wm=1, password_img=1)
-wm_extract = bwm1.extract('output/纵向裁剪攻击_填补.png', wm_shape=len_wm, mode='str')
-print(f"纵向裁剪攻击r={r}后的提取结果：", wm_extract)
-
-assert wm == wm_extract, '提取水印和原水印不一致'
 # %%椒盐攻击
 ratio = 0.05
 att.salt_pepper_att(input_filename='output/embedded.png', output_file_name='output/椒盐攻击.png', ratio=ratio)
