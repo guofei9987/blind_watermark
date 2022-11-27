@@ -80,6 +80,27 @@ def cut_att2(input_filename=None, input_img=None, output_file_name=None, loc_r=(
     return output_img, (x1, y1, x2, y2)
 
 
+def cut_att3(input_filename=None, input_img=None, output_file_name=None, loc=(0, 0, 500, 500), scale=1.1):
+    # 剪切攻击 + 缩放攻击
+    if input_filename:
+        input_img = cv2.imread(input_filename)
+
+    # 剪切攻击
+    x1, y1, x2, y2 = loc
+    output_img = input_img[y1:y2, x1:x2].copy()
+
+    # 如果缩放攻击
+    if scale and scale != 1:
+        h, w, _ = output_img.shape
+        output_img = cv2.resize(output_img, dsize=(int(w * scale), int(h * scale)))
+    else:
+        output_img = output_img
+
+    if output_file_name:
+        cv2.imwrite(output_file_name, output_img)
+    return output_img, (x1, y1, x2, y2)
+
+
 def anti_cut_att_old(input_filename, output_file_name, origin_shape):
     # 反裁剪攻击：复制一块范围，然后补全
     # origin_shape 分辨率与约定理解的是颠倒的，约定的是列数*行数
