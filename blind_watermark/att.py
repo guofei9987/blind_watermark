@@ -98,7 +98,7 @@ def cut_att3(input_filename=None, input_img=None, output_file_name=None, loc=(0,
 
     if output_file_name:
         cv2.imwrite(output_file_name, output_img)
-    return output_img, (x1, y1, x2, y2)
+    return output_img
 
 
 def anti_cut_att_old(input_filename, output_file_name, origin_shape):
