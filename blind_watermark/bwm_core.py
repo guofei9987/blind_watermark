@@ -12,7 +12,7 @@ from .pool import AutoPool
 
 
 class WaterMarkCore:
-    def __init__(self, password_img=1, mode='common', processes=None):
+    def __init__(self, password_img=1, mode='common', processes=None , force=True):
         self.block_shape = np.array([4, 4])
         self.password_img = password_img
         self.d1, self.d2 = 36, 20  # d1/d2 越大鲁棒性越强,但输出图片的失真越大
@@ -24,7 +24,7 @@ class WaterMarkCore:
         self.ca_part = [np.array([])] * 3  # 四维分块后，有时因不整除而少一部分，self.ca_part 是少这一部分的 self.ca
 
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
-        self.pool = AutoPool(mode=mode, processes=processes)
+        self.pool = AutoPool(mode=mode, processes=processes, force=force)
 
         self.fast_mode = False
         self.alpha = None  # 用于处理透明图

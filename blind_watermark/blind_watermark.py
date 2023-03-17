@@ -12,10 +12,10 @@ from .version import bw_notes
 
 
 class WaterMark:
-    def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), mode='common', processes=None):
+    def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), mode='common', processes=None, force = True):
         bw_notes.print_notes()
 
-        self.bwm_core = WaterMarkCore(password_img=password_img, mode=mode, processes=processes)
+        self.bwm_core = WaterMarkCore(password_img=password_img, mode=mode, processes=processes, force=force)
 
         self.password_wm = password_wm
 

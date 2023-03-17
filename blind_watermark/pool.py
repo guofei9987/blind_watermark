@@ -2,8 +2,8 @@ import sys
 import multiprocessing
 import warnings
 
-if sys.platform != 'win32':
-    multiprocessing.set_start_method('fork')
+# if sys.platform != 'win32':
+#     multiprocessing.set_start_method('fork')
 
 
 class CommonPool(object):
@@ -12,7 +12,10 @@ class CommonPool(object):
 
 
 class AutoPool(object):
-    def __init__(self, mode, processes):
+    def __init__(self, mode, processes, force):
+        
+        if force == True and sys.platform != 'win32':
+            multiprocessing.set_start_method('fork',force=force)
 
         if mode == 'multiprocessing' and sys.platform == 'win32':
             warnings.warn('multiprocessing not support in windows, turning to multithreading')
