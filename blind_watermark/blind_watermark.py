@@ -31,7 +31,8 @@ class WaterMark:
 
         if isinstance(img, bytes):
             # 读取 bytes 对象
-            img = cv2.imdecode(img, flags=cv2.IMREAD_UNCHANGED)
+            buf = np.frombuffer(img, np.uint8)
+            img = cv2.imdecode(buf, flags=cv2.IMREAD_UNCHANGED)
 
         self.bwm_core.read_img_arr(img=img)
         return img
@@ -40,7 +41,8 @@ class WaterMark:
         assert mode in ('img', 'str', 'bit'), "mode in ('img','str','bit')"
         if mode == 'img':
             if isinstance(wm_content, bytes):
-                wm = cv2.imdecode(filename=wm_content, flags=cv2.IMREAD_GRAYSCALE)
+                buf = np.frombuffer(wm_content, dtype=np.uint8)
+                wm = cv2.imdecode(buf, flags=cv2.IMREAD_GRAYSCALE)
             else:
                 wm = cv2.imread(filename=wm_content, flags=cv2.IMREAD_GRAYSCALE)
                 assert wm is not None, 'file "{filename}" not read'.format(filename=wm_content)
@@ -84,7 +86,7 @@ class WaterMark:
 
     def embed_bytes(self):
         embed_img = self.bwm_core.embed()
-        return cv2.imencode('.png', embed_img)
+        return cv2.imencode('.png', embed_img)[1]
 
     def extract_decrypt(self, wm_avg):
         wm_index = np.arange(self.wm_size)
