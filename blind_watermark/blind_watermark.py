@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
-# @Time    : 2020/8/13
+# @Time    : 2023/04/01
 # @Author  : github.com/guofei9987
+# @Author  : github.com/jinzhijie
 import warnings
 
 import numpy as np
@@ -28,14 +29,23 @@ class WaterMark:
             img = cv2.imread(filename, flags=cv2.IMREAD_UNCHANGED)
             assert img is not None, "image file '{filename}' not read".format(filename=filename)
 
+        if isinstance(img, bytes):
+            # 读取 bytes 对象
+            buf = np.frombuffer(img, np.uint8)
+            img = cv2.imdecode(buf, flags=cv2.IMREAD_UNCHANGED)
+
         self.bwm_core.read_img_arr(img=img)
         return img
 
     def read_wm(self, wm_content, mode='img'):
         assert mode in ('img', 'str', 'bit'), "mode in ('img','str','bit')"
         if mode == 'img':
-            wm = cv2.imread(filename=wm_content, flags=cv2.IMREAD_GRAYSCALE)
-            assert wm is not None, 'file "{filename}" not read'.format(filename=wm_content)
+            if isinstance(wm_content, bytes):
+                buf = np.frombuffer(wm_content, dtype=np.uint8)
+                wm = cv2.imdecode(buf, flags=cv2.IMREAD_GRAYSCALE)
+            else:
+                wm = cv2.imread(filename=wm_content, flags=cv2.IMREAD_GRAYSCALE)
+                assert wm is not None, 'file "{filename}" not read'.format(filename=wm_content)
 
             # 读入图片格式的水印，并转为一维 bit 格式，抛弃灰度级别
             self.wm_bit = wm.flatten() > 128
@@ -74,6 +84,10 @@ class WaterMark:
                 cv2.imwrite(filename=filename, img=embed_img)
         return embed_img
 
+    def embed_bytes(self, ext='.png'):
+        embed_img = self.bwm_core.embed()
+        return cv2.imencode(ext, embed_img)[1]
+
     def extract_decrypt(self, wm_avg):
         wm_index = np.arange(self.wm_size)
         np.random.RandomState(self.password_wm).shuffle(wm_index)
@@ -86,6 +100,10 @@ class WaterMark:
         if filename is not None:
             embed_img = cv2.imread(filename, flags=cv2.IMREAD_COLOR)
             assert embed_img is not None, "{filename} not read".format(filename=filename)
+        
+        if isinstance(embed_img, bytes):
+            buf = np.frombuffer(embed_img, dtype=np.uint8)
+            embed_img = cv2.imdecode(buf, flags=cv2.IMREAD_COLOR)
 
         self.wm_size = np.array(wm_shape).prod()
 
@@ -100,9 +118,10 @@ class WaterMark:
         # 转化为指定格式：
         if mode == 'img':
             wm = 255 * wm.reshape(wm_shape[0], wm_shape[1])
-            cv2.imwrite(out_wm_name, wm)
+            if out_wm_name is not None:
+                cv2.imwrite(out_wm_name, wm)
         elif mode == 'str':
-            byte = ''.join((np.round(wm)).astype(np.int).astype(np.str))
+            byte = ''.join((np.round(wm)).astype(int).astype(str))
             wm = bytes.fromhex(hex(int(byte, base=2))[2:]).decode('utf-8', errors='replace')
 
         return wm

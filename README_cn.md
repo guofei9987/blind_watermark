@@ -166,6 +166,29 @@ WaterMark(..., processes=None)
 ```
 - `processes`: 整数，指定线程数。默认为 `None`, 表示使用全部线程。
 
+# 在内存中操作
+
+以下的 `bytes(...)` **仅作示意**，即需要传入 `bytes` 对象。
+
+嵌入图片：
+```python
+from blind_watermark import WaterMark
+
+bwm1 = WaterMark(password_wm=1, password_img=1)
+# 读取原始图
+bwm1.read_img(img=bytes(...))
+# 读取水印图
+bwm1.read_wm(bytes(...))
+# 嵌入
+bwm1.embed_bytes()
+```
+
+解水印：（注意设定水印形状 `wm_shape`）
+```python
+bwm1 = WaterMark(password_wm=1, password_img=1)
+# wm_shape 是必要的
+bwm1.extract(embed_img=bytes(...), wm_shape=(128, 128))
+```
 
 ## 相关项目
 
