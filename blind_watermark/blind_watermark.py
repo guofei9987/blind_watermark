@@ -121,7 +121,7 @@ class WaterMark:
             if out_wm_name is not None:
                 cv2.imwrite(out_wm_name, wm)
         elif mode == 'str':
-            byte = ''.join((np.round(wm)).astype(np.int).astype(np.str))
+            byte = ''.join((np.round(wm)).astype(int).astype(str))
             wm = bytes.fromhex(hex(int(byte, base=2))[2:]).decode('utf-8', errors='replace')
 
         return wm
