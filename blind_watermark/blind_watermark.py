@@ -84,9 +84,9 @@ class WaterMark:
                 cv2.imwrite(filename=filename, img=embed_img)
         return embed_img
 
-    def embed_bytes(self, ext='.png', buf=None):
+    def embed_bytes(self, ext='.png'):
         embed_img = self.bwm_core.embed()
-        return cv2.imencode(ext, embed_img, *(buf, ) if buf is not None else ())[1]
+        return cv2.imencode(ext, embed_img)[1]
 
     def extract_decrypt(self, wm_avg):
         wm_index = np.arange(self.wm_size)
