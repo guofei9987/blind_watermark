@@ -102,7 +102,8 @@ class WaterMark:
             assert embed_img is not None, "{filename} not read".format(filename=filename)
         
         if isinstance(embed_img, bytes):
-            embed_img = cv2.imdecode(embed_img, flags=cv2.IMREAD_COLOR)
+            buf = np.frombuffer(embed_img, dtype=np.uint8)
+            embed_img = cv2.imdecode(buf, flags=cv2.IMREAD_COLOR)
 
         self.wm_size = np.array(wm_shape).prod()
 
