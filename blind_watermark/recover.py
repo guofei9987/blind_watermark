@@ -29,7 +29,7 @@ def match_template(w, h, idx):
 
 def match_template_by_scale(scale):
     image, template = my_value.image, my_value.template
-    w, h = int(np.round(template.shape[1] * scale)), int(template.shape[0] * scale)
+    w, h = round(template.shape[1] * scale), round(template.shape[0] * scale)
     ind, score = match_template(w, h, idx=my_value.idx)
     return ind, score, scale
 
@@ -72,6 +72,7 @@ def estimate_crop_parameters(original_file=None, template_file=None, ori_img=Non
         ori_img = cv2.imread(original_file, cv2.IMREAD_GRAYSCALE)  # image
 
     if scale[0] == scale[1] == 1:
+        # 不缩放
         scale_infer = 1
         scores = cv2.matchTemplate(ori_img, tem_img, cv2.TM_CCOEFF_NORMED)
         ind = np.unravel_index(np.argmax(scores, axis=None), scores.shape)
