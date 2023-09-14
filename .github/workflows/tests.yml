@@ -18,9 +18,9 @@ jobs:
         run: |
           pip install -r requirements.txt
       #          pip install pytest-cover
-      - name: Run tests and collect coverage
+      - name: Run tests
         run: |
-          pip install .
+          python setup.py install
           python examples/example_bit.py
           python examples/example_img.py
           python examples/example_no_writing.py
