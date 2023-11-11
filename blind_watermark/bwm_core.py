@@ -13,10 +13,14 @@ from .pool import AutoPool
 class WaterMarkCore:
     def __init__(self, password_img=1, mode='common', processes=None):
         self.block_shape = np.array([4, 4])
+        self.block_h, self.block_w = self.block_shape  # block 的大小
+
         self.password_img = password_img
         self.d1, self.d2 = 36, 20  # d1/d2 越大鲁棒性越强,但输出图片的失真越大
 
         self.img, self.img_YUV = None, None  # self.img 是原图，self.img_YUV 对像素做了加白偶数化
+        self.img_h, self.img_w = None, None  # 原图的大小
+        self.block_num_h, self.block_num_w = None, None  # 分块数量
         self.ca, self.hvd, = [None] * 3, [None] * 3  # 每个通道 dct 的结果
 
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
@@ -35,16 +39,14 @@ class WaterMarkCore:
 
         # 读入图片->YUV化->加白边使像素变偶数->四维分块
         self.img = img.astype(np.float32)
-
-        self.block_h, self.block_w = self.block_shape
         self.img_h, self.img_w = self.img.shape[:2]
 
         # 分块的数量
-        self.ca_num_h, self.ca_num_w = self.img_h // 2 // self.block_h, self.img_w // 2 // self.block_w
-        self.block_num = self.ca_num_h * self.ca_num_w
+        self.block_num_h, self.block_num_w = self.img_h // 2 // self.block_h, self.img_w // 2 // self.block_w
+        self.block_num = self.block_num_h * self.block_num_w
 
         # ca 水印作用的像素区域
-        self.ca_h, self.ca_w = self.ca_num_h * self.block_h, self.ca_num_w * self.block_w
+        self.ca_h, self.ca_w = self.block_num_h * self.block_h, self.block_num_w * self.block_w
         # 像素区域
         self.img_h_new, self.img_w_new = self.ca_h * 2, self.ca_w * 2
 
@@ -54,14 +56,14 @@ class WaterMarkCore:
 
     def embed(self):
         embed_ca = np.zeros(shape=(self.ca_h, self.ca_w, 3))
-        embed_YUV = [np.array([]), np.array([]), np.array([])]
+        embed_YUV = np.zeros(shape=(self.img_h_new, self.img_w_new, 3))
 
         self.idx_shuffle = random_strategy1(self.password_img, self.block_num,
                                             self.block_h * self.block_w)
         for channel in range(3):
             tmp_blocks = list()
             for i in range(self.block_num):
-                idx1, idx2 = i // self.ca_num_w, i % self.ca_num_w
+                idx1, idx2 = i // self.block_num_w, i % self.block_num_w
                 tmp_block = self.ca[channel][
                             idx1 * self.block_h:idx1 * self.block_h + self.block_h,
                             idx2 * self.block_w:idx2 * self.block_w + self.block_w]
@@ -72,20 +74,19 @@ class WaterMarkCore:
                                 [(tmp_blocks[i], self.idx_shuffle[i], i) for i in range(self.block_num)])
 
             for i in range(self.block_num):
-                idx1, idx2 = i // self.ca_num_w, i % self.ca_num_w
-                embed_ca[idx1 * self.block_h:idx1 * self.block_h + self.block_h,
-                idx2 * self.block_w:idx2 * self.block_w + self.block_w, channel] = tmp[i]
+                idx1, idx2 = i // self.block_num_w, i % self.block_num_w
+                embed_ca[
+                    idx1 * self.block_h:idx1 * self.block_h + self.block_h,
+                    idx2 * self.block_w:idx2 * self.block_w + self.block_w, channel
+                ] \
+                    = tmp[i]
 
             # 逆变换回去
-            embed_YUV[channel] = idwt2((embed_ca[:, :, channel], self.hvd[channel]), "haar")
+            embed_YUV[:, :, channel] = idwt2((embed_ca[:, :, channel], self.hvd[channel]), "haar")
 
-        # 合并3通道
-        embed_img_YUV = np.stack(embed_YUV, axis=2)
-
-        embed_img1 = cv2.cvtColor(embed_img_YUV.astype(np.float32), cv2.COLOR_YUV2BGR)
+        embed_img1 = cv2.cvtColor(embed_YUV.astype(np.float32), cv2.COLOR_YUV2BGR)
         # 之前由于不能整除导致留了一些边角料，拼回去
         embed_img = self.img.copy()
-
         embed_img[:self.img_h_new, :self.img_w_new, :] = embed_img1
         embed_img = np.clip(embed_img, a_min=0, a_max=255)
 
@@ -170,7 +171,7 @@ class WaterMarkCore:
         for channel in range(3):
             tmp_blocks = list()
             for i in range(self.block_num):
-                idx1, idx2 = i // self.ca_num_w, i % self.ca_num_w
+                idx1, idx2 = i // self.block_num_w, i % self.block_num_w
                 tmp_block = self.ca[channel][
                             idx1 * self.block_h:idx1 * self.block_h + self.block_h,
                             idx2 * self.block_w:idx2 * self.block_w + self.block_w]
