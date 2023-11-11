@@ -63,14 +63,14 @@ class WaterMarkCore:
         embed_YUV = np.zeros(shape=(self.img_h_new, self.img_w_new, 3))
 
         for channel in range(3):
-            for i in range(self.block_num):
-                wm_1 = self.wm_bit[i % self.wm_size]
-                idx1, idx2 = i // self.block_num_w, i % self.block_num_w
-                slice1 = slice(idx1 * self.block_h, idx1 * self.block_h + self.block_h)
-                slice2 = slice(idx2 * self.block_w, idx2 * self.block_w + self.block_w)
-
-                embed_ca[slice1, slice2, channel] = \
-                    self.block_add_wm_1(self.ca[slice1, slice2, channel], self.idx_shuffle[i], wm_1)
+            for idx1 in range(self.block_num_h):
+                for idx2 in range(self.block_num_w):
+                    i = idx1 * self.block_num_w + idx2
+                    slice1 = slice(idx1 * self.block_h, idx1 * self.block_h + self.block_h)
+                    slice2 = slice(idx2 * self.block_w, idx2 * self.block_w + self.block_w)
+                    wm_1 = self.wm_bit[i % self.wm_size]
+                    embed_ca[slice1, slice2, channel] = \
+                        self.block_add_wm_1(self.ca[slice1, slice2, channel], self.idx_shuffle[i], wm_1)
 
             # 逆变换回去
             embed_YUV[:, :, channel] = idwt2((embed_ca[:, :, channel], self.hvd[channel]), "haar")
@@ -140,12 +140,13 @@ class WaterMarkCore:
         wm_block_bit = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
 
         for channel in range(3):
-            for i in range(self.block_num):
-                idx1, idx2 = i // self.block_num_w, i % self.block_num_w
-                slice1 = slice(idx1 * self.block_h, idx1 * self.block_h + self.block_h)
-                slice2 = slice(idx2 * self.block_w, idx2 * self.block_w + self.block_w)
-                tmp_block = self.ca[slice1, slice2, channel]
-                wm_block_bit[channel, i] = self.block_get_wm_1(tmp_block, self.idx_shuffle[i])
+            for idx1 in range(self.block_num_h):
+                for idx2 in range(self.block_num_w):
+                    i = idx1 * self.block_num_w + idx2
+                    slice1 = slice(idx1 * self.block_h, idx1 * self.block_h + self.block_h)
+                    slice2 = slice(idx2 * self.block_w, idx2 * self.block_w + self.block_w)
+                    wm_block_bit[channel, i] \
+                        = self.block_get_wm_1(self.ca[slice1, slice2, channel], self.idx_shuffle[i])
 
         return wm_block_bit
 
