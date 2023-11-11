@@ -7,7 +7,6 @@ from numpy.linalg import svd
 import cv2
 from cv2 import dct, idct
 from pywt import dwt2, idwt2
-from .pool import AutoPool
 
 
 class WaterMarkCore:
@@ -21,10 +20,9 @@ class WaterMarkCore:
         self.img, self.img_YUV = None, None  # self.img 是原图，self.img_YUV 对像素做了加白偶数化
         self.img_h, self.img_w = None, None  # 原图的大小
         self.block_num_h, self.block_num_w = None, None  # 分块数量
-        self.ca, self.hvd, = [None] * 3, [None] * 3  # 每个通道 dct 的结果
+        self.ca, self.hvd, = None, [None] * 3  # 每个通道 dct 的结果
 
         self.wm_size, self.block_num = 0, 0  # 水印的长度，原图片可插入信息的个数
-        self.pool = AutoPool(mode=mode, processes=processes)
 
         self.fast_mode = False
         self.alpha = None  # 用于处理透明图
@@ -51,35 +49,28 @@ class WaterMarkCore:
         self.img_h_new, self.img_w_new = self.ca_h * 2, self.ca_w * 2
 
         self.img_YUV = cv2.cvtColor(self.img, cv2.COLOR_BGR2YUV)
+        self.ca = np.zeros(shape=(self.ca_h, self.ca_w, 3))
         for channel in range(3):
-            self.ca[channel], self.hvd[channel] = dwt2(self.img_YUV[:self.img_h_new, :self.img_w_new, channel], 'haar')
+            self.ca[:, :, channel], self.hvd[channel] = \
+                dwt2(self.img_YUV[:self.img_h_new, :self.img_w_new, channel], 'haar')
+
+        self.idx_shuffle = random_strategy1(
+            seed=self.password_img, size=self.block_num, block_shape=self.block_h * self.block_w,
+        )
 
     def embed(self):
         embed_ca = np.zeros(shape=(self.ca_h, self.ca_w, 3))
         embed_YUV = np.zeros(shape=(self.img_h_new, self.img_w_new, 3))
 
-        self.idx_shuffle = random_strategy1(self.password_img, self.block_num,
-                                            self.block_h * self.block_w)
         for channel in range(3):
-            tmp_blocks = list()
             for i in range(self.block_num):
+                wm_1 = self.wm_bit[i % self.wm_size]
                 idx1, idx2 = i // self.block_num_w, i % self.block_num_w
-                tmp_block = self.ca[channel][
-                            idx1 * self.block_h:idx1 * self.block_h + self.block_h,
-                            idx2 * self.block_w:idx2 * self.block_w + self.block_w]
-                tmp_blocks.append(tmp_block)
+                slice1 = slice(idx1 * self.block_h, idx1 * self.block_h + self.block_h)
+                slice2 = slice(idx2 * self.block_w, idx2 * self.block_w + self.block_w)
 
-            # 为了可以并行，写成这样
-            tmp = self.pool.map(self.block_add_wm,
-                                [(tmp_blocks[i], self.idx_shuffle[i], i) for i in range(self.block_num)])
-
-            for i in range(self.block_num):
-                idx1, idx2 = i // self.block_num_w, i % self.block_num_w
-                embed_ca[
-                    idx1 * self.block_h:idx1 * self.block_h + self.block_h,
-                    idx2 * self.block_w:idx2 * self.block_w + self.block_w, channel
-                ] \
-                    = tmp[i]
+                embed_ca[slice1, slice2, channel] = \
+                    self.block_add_wm_1(self.ca[slice1, slice2, channel], self.idx_shuffle[i], wm_1)
 
             # 逆变换回去
             embed_YUV[:, :, channel] = idwt2((embed_ca[:, :, channel], self.hvd[channel]), "haar")
@@ -99,16 +90,8 @@ class WaterMarkCore:
         self.wm_bit = wm_bit
         self.wm_size = wm_bit.size
 
-    def block_add_wm(self, arg):
-        if self.fast_mode:
-            return self.block_add_wm_fast(arg)
-        else:
-            return self.block_add_wm_slow(arg)
-
-    def block_add_wm_slow(self, arg):
-        block, shuffler, i = arg
+    def block_add_wm_1(self, block, shuffler, wm_1):
         # dct->(flatten->加密->逆flatten)->svd->打水印->逆svd->(flatten->解密->逆flatten)->逆dct
-        wm_1 = self.wm_bit[i % self.wm_size]
         block_dct = dct(block)
 
         # 加密（打乱顺序）
@@ -118,9 +101,19 @@ class WaterMarkCore:
         if self.d2:
             s[1] = (s[1] // self.d2 + 1 / 4 + 1 / 2 * wm_1) * self.d2
 
-        block_dct_flatten = np.dot(u, np.dot(np.diag(s), v)).flatten()
+        block_dct_flatten = (u @ np.diag(s) @ v).flatten()
         block_dct_flatten[shuffler] = block_dct_flatten.copy()
         return idct(block_dct_flatten.reshape(self.block_shape))
+
+    def block_get_wm_1(self, block, shuffler):
+        # dct->flatten->加密->逆flatten->svd->解水印
+        block_dct_shuffled = dct(block).flatten()[shuffler].reshape(self.block_shape)
+        u, s, v = svd(block_dct_shuffled)
+        wm = (s[0] % self.d1 > self.d1 / 2) * 1
+        if self.d2:
+            tmp = (s[1] % self.d2 > self.d2 / 2) * 1
+            wm = (wm * 3 + tmp * 1) / 4
+        return wm
 
     def block_add_wm_fast(self, arg):
         # dct->svd->打水印->逆svd->逆dct
@@ -131,24 +124,6 @@ class WaterMarkCore:
         s[0] = (s[0] // self.d1 + 1 / 4 + 1 / 2 * wm_1) * self.d1
 
         return idct(np.dot(u, np.dot(np.diag(s), v)))
-
-    def block_get_wm(self, args):
-        if self.fast_mode:
-            return self.block_get_wm_fast(args)
-        else:
-            return self.block_get_wm_slow(args)
-
-    def block_get_wm_slow(self, args):
-        block, shuffler = args
-        # dct->flatten->加密->逆flatten->svd->解水印
-        block_dct_shuffled = dct(block).flatten()[shuffler].reshape(self.block_shape)
-
-        u, s, v = svd(block_dct_shuffled)
-        wm = (s[0] % self.d1 > self.d1 / 2) * 1
-        if self.d2:
-            tmp = (s[1] % self.d2 > self.d2 / 2) * 1
-            wm = (wm * 3 + tmp * 1) / 4
-        return wm
 
     def block_get_wm_fast(self, args):
         block, shuffler = args
@@ -164,23 +139,14 @@ class WaterMarkCore:
 
         wm_block_bit = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
 
-        self.idx_shuffle = random_strategy1(seed=self.password_img,
-                                            size=self.block_num,
-                                            block_shape=self.block_h * self.block_w,  # 16
-                                            )
         for channel in range(3):
-            tmp_blocks = list()
             for i in range(self.block_num):
                 idx1, idx2 = i // self.block_num_w, i % self.block_num_w
-                tmp_block = self.ca[channel][
-                            idx1 * self.block_h:idx1 * self.block_h + self.block_h,
-                            idx2 * self.block_w:idx2 * self.block_w + self.block_w]
-                tmp_blocks.append(tmp_block)
+                slice1 = slice(idx1 * self.block_h, idx1 * self.block_h + self.block_h)
+                slice2 = slice(idx2 * self.block_w, idx2 * self.block_w + self.block_w)
+                tmp_block = self.ca[slice1, slice2, channel]
+                wm_block_bit[channel, i] = self.block_get_wm_1(tmp_block, self.idx_shuffle[i])
 
-            wm_block_bit[channel, :] = self.pool.map(
-                self.block_get_wm,
-                [(tmp_blocks[i], self.idx_shuffle[i])
-                 for i in range(self.block_num)])
         return wm_block_bit
 
     def extract_avg(self, wm_block_bit):
