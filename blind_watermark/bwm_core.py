@@ -49,6 +49,76 @@ class WaterMarkCore:
         self.img = img.astype(np.float32)
         self.img_shape = self.img.shape[:2]
 
+        self.block_h, self.block_w = self.block_shape
+        self.img_h, self.img_w = self.img.shape[:2]
+
+        # 分块的数量
+        self.ca_num_h, self.ca_num_w = self.img_h // 2 // self.block_h, self.img_w // 2 // self.block_w
+        self.block_num = self.ca_num_h * self.ca_num_w
+
+        # ca 水印作用的像素区域
+        self.ca_h, self.ca_w = self.ca_num_h * self.block_h, self.ca_num_w * self.block_w
+        # 像素区域
+        self.img_h_new, self.img_w_new = self.ca_h * 2, self.ca_w * 2
+
+        self.img_YUV = cv2.cvtColor(self.img, cv2.COLOR_BGR2YUV)
+        for channel in range(3):
+            self.ca[channel], self.hvd[channel] = dwt2(self.img_YUV[:self.img_h_new, :self.img_w_new, channel], 'haar')
+
+    def embed(self):
+        embed_ca = np.zeros(shape=(self.ca_h, self.ca_w, 3))
+        embed_YUV = [np.array([]), np.array([]), np.array([])]
+
+        self.idx_shuffle = random_strategy1(self.password_img, self.block_num,
+                                            self.block_h * self.block_w)
+        for channel in range(3):
+            tmp_blocks = list()
+            for i in range(self.block_num):
+                idx1, idx2 = i // self.ca_num_w, i % self.ca_num_w
+                tmp_block = self.ca[channel][
+                            idx1 * self.block_h:idx1 * self.block_h + self.block_h,
+                            idx2 * self.block_w:idx2 * self.block_w + self.block_w]
+                tmp_blocks.append(tmp_block)
+
+            # 为了可以并行，写成这样
+            tmp = self.pool.map(self.block_add_wm,
+                                [(tmp_blocks[i], self.idx_shuffle[i], i) for i in range(self.block_num)])
+
+            for i in range(self.block_num):
+                idx1, idx2 = i // self.ca_num_w, i % self.ca_num_w
+                embed_ca[idx1 * self.block_h:idx1 * self.block_h + self.block_h,
+                idx2 * self.block_w:idx2 * self.block_w + self.block_w, channel] = tmp[i]
+
+            # 逆变换回去
+            embed_YUV[channel] = idwt2((embed_ca[:, :, channel], self.hvd[channel]), "haar")
+
+        # 合并3通道
+        embed_img_YUV = np.stack(embed_YUV, axis=2)
+
+        embed_img1 = cv2.cvtColor(embed_img_YUV.astype(np.float32), cv2.COLOR_YUV2BGR)
+        # 之前由于不能整除导致留了一些边角料，拼回去
+        embed_img = self.img.copy()
+
+        embed_img[:self.img_h_new, :self.img_w_new, :] = embed_img1
+        embed_img = np.clip(embed_img, a_min=0, a_max=255)
+
+        # 透明通道原样加回去
+        if self.alpha is not None:
+            embed_img = cv2.merge([embed_img.astype(np.uint8), self.alpha])
+        return embed_img
+
+    def read_img_arr2(self, img):
+        # 处理透明图
+        self.alpha = None
+        if img.shape[2] == 4:
+            if img[:, :, 3].min() < 255:
+                self.alpha = img[:, :, 3]
+                img = img[:, :, :3]
+
+        # 读入图片->YUV化->加白边使像素变偶数->四维分块
+        self.img = img.astype(np.float32)
+        self.img_shape = self.img.shape[:2]
+
         # 如果不是偶数，那么补上白边，Y（明亮度）UV（颜色）
         self.img_YUV = cv2.copyMakeBorder(cv2.cvtColor(self.img, cv2.COLOR_BGR2YUV),
                                           0, self.img.shape[0] % 2, 0, self.img.shape[1] % 2,
@@ -103,7 +173,7 @@ class WaterMarkCore:
 
         return idct(np.dot(u, np.dot(np.diag(s), v)))
 
-    def embed(self):
+    def embed2(self):
         self.init_block_index()
 
         embed_ca = copy.deepcopy(self.ca)
@@ -164,6 +234,31 @@ class WaterMarkCore:
         return wm
 
     def extract_raw(self, img):
+        # 每个分块提取 1 bit 信息
+        self.read_img_arr(img=img)
+
+        wm_block_bit = np.zeros(shape=(3, self.block_num))  # 3个channel，length 个分块提取的水印，全都记录下来
+
+        self.idx_shuffle = random_strategy1(seed=self.password_img,
+                                            size=self.block_num,
+                                            block_shape=self.block_h * self.block_w,  # 16
+                                            )
+        for channel in range(3):
+            tmp_blocks = list()
+            for i in range(self.block_num):
+                idx1, idx2 = i // self.ca_num_w, i % self.ca_num_w
+                tmp_block = self.ca[channel][
+                            idx1 * self.block_h:idx1 * self.block_h + self.block_h,
+                            idx2 * self.block_w:idx2 * self.block_w + self.block_w]
+                tmp_blocks.append(tmp_block)
+
+            wm_block_bit[channel, :] = self.pool.map(
+                self.block_get_wm,
+                [(tmp_blocks[i], self.idx_shuffle[i])
+                 for i in range(self.block_num)])
+        return wm_block_bit
+
+    def extract_raw2(self, img):
         # 每个分块提取 1 bit 信息
         self.read_img_arr(img=img)
         self.init_block_index()
