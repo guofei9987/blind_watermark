@@ -157,7 +157,7 @@ class WaterMarkCore:
 
     def block_get_wm_fast(self, args):
         block, shuffler = args
-        # dct->flatten->加密->逆flatten->svd->解水印
+        # dct->svd->解水印
         u, s, v = svd(dct(block))
         wm = (s[0] % self.d1 > self.d1 / 2) * 1
 
