@@ -2,7 +2,6 @@
 # coding=utf-8
 # @Time    : 2020/8/13
 # @Author  : github.com/guofei9987
-import warnings
 
 import numpy as np
 import cv2
@@ -12,10 +11,10 @@ from .version import bw_notes
 
 
 class WaterMark:
-    def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), mode='common', processes=None):
+    def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), d=(36, 20)):
         bw_notes.print_notes()
 
-        self.bwm_core = WaterMarkCore(password_img=password_img, mode=mode, processes=processes)
+        self.bwm_core = WaterMarkCore(password_img=password_img, block_shape=block_shape, d=d)
 
         self.password_wm = password_wm
 
@@ -54,14 +53,14 @@ class WaterMark:
         self.bwm_core.read_wm(self.wm_bit)
 
     def embed(self, filename=None, compression_ratio=None):
-        '''
+        """
         :param filename: string
             Save the image file as filename
         :param compression_ratio: int or None
             If compression_ratio = None, do not compression,
             If compression_ratio is integer between 0 and 100, the smaller, the output file is smaller.
         :return:
-        '''
+        """
         embed_img = self.bwm_core.embed()
         if filename is not None:
             if compression_ratio is None:
