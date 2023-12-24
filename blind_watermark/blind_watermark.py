@@ -52,7 +52,7 @@ class WaterMark:
 
         self.bwm_core.read_wm(self.wm_bit)
 
-    def embed(self, filename=None, compression_ratio=None):
+    def embed(self, filename=None, compression_ratio: int = 100):
         """
         :param filename: string
             Save the image file as filename
@@ -62,6 +62,8 @@ class WaterMark:
         :return:
         """
         embed_img = self.bwm_core.embed()
+        if compression_ratio == 100:
+            compression_ratio = None
         if filename is not None:
             if compression_ratio is None:
                 cv2.imwrite(filename=filename, img=embed_img)
