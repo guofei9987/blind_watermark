@@ -181,7 +181,7 @@ def anti_cut_att_old(input_filename, output_file_name, origin_shape):
     input_img = cv2.imread(input_filename)
     output_img = input_img.copy()
     output_img_shape = output_img.shape
-    if output_img_shape[0] > origin_shape[0] or output_img_shape[0] > origin_shape[0]:
+    if output_img_shape[0] > origin_shape[0] or output_img_shape[1] > origin_shape[1]:
         print('裁剪打击后的图片，不可能比原始图片大，检查一下')
         return
 
@@ -204,7 +204,7 @@ def anti_cut_att(input_filename=None, input_img=None, output_file_name=None, ori
         input_img = cv2.imread(input_filename)
     output_img = input_img.copy()
     output_img_shape = output_img.shape
-    if output_img_shape[0] > origin_shape[0] or output_img_shape[0] > origin_shape[0]:
+    if output_img_shape[0] > origin_shape[0] or output_img_shape[1] > origin_shape[1]:
         print('裁剪打击后的图片，不可能比原始图片大，检查一下')
         return
 
