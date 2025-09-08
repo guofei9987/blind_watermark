@@ -155,8 +155,8 @@ bwm1.embed('output/embedded.png')
 
 Extract:
 ```python
-bwm1 = WaterMark(password_img=1, password_wm=1, wm_shape=6)
-wm_extract = bwm1.extract('output/打上水印的图.png', mode='bit')
+bwm1 = WaterMark(password_img=1, password_wm=1)
+wm_extract = bwm1.extract('output/embedded.png', wm_shape=6, mode='bit')
 print(wm_extract)
 ```
 Notice that `wm_shape` (shape of watermark) is necessary
