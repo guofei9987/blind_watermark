@@ -1,10 +1,5 @@
-
-
-
 # blind-watermark
-
 Blind watermark based on DWT-DCT-SVD.
-
 
 [![PyPI](https://img.shields.io/pypi/v/blind_watermark)](https://pypi.org/project/blind_watermark/)
 [![Build Status](https://travis-ci.com/guofei9987/blind_watermark.svg?branch=master)](https://travis-ci.com/guofei9987/blind_watermark)
@@ -12,166 +7,96 @@ Blind watermark based on DWT-DCT-SVD.
 [![License](https://img.shields.io/pypi/l/blind_watermark.svg)](https://github.com/guofei9987/blind_watermark/blob/master/LICENSE)
 ![Python](https://img.shields.io/badge/python->=3.5-green.svg)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
-[![stars](https://img.shields.io/github/stars/guofei9987/blind_watermark.svg?style=social)](https://github.com/guofei9987/blind_watermark/)
-[![fork](https://img.shields.io/github/forks/guofei9987/blind_watermark?style=social)](https://github.com/guofei9987/blind_watermark/fork)
-[![Downloads](https://pepy.tech/badge/blind-watermark)](https://pepy.tech/project/blind-watermark)
-[![Discussions](https://img.shields.io/badge/discussions-green.svg)](https://github.com/guofei9987/blind_watermark/discussions)
-<a href="https://hellogithub.com/repository/guofei9987/blind_watermark" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=3834302ff46a40f188a651ef8bd26ff5&claim_uid=se0WHo8cbiLv2w1&theme=small" alt="Featured｜HelloGitHub" /></a>
 
 - **Documentation:** [https://BlindWatermark.github.io/blind_watermark/#/en/](https://BlindWatermark.github.io/blind_watermark/#/en/)
-- **文档：** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://BlindWatermark.github.io/blind_watermark/#/zh/)  
-- **中文 readme** [README_cn.md](README_cn.md)
-- **Source code:** [https://github.com/guofei9987/blind_watermark](https://github.com/guofei9987/blind_watermark)
+- **中文文档:** [https://BlindWatermark.github.io/blind_watermark/#/zh/](https://BlindWatermark.github.io/blind_watermark/#/zh/)
+
+# Quick Start: Web App
+
+For ease of use, this project includes a modern web interface.
+
+## How to Run
+
+### Option 1: Run with Docker (Recommended)
+This is the simplest and recommended method to avoid local environment issues.
+
+1.  **Start the Application:**
+    In the project root directory, run the following command:
+    ```bash
+    docker-compose up -d
+    ```
+
+2.  **Access the Application:**
+    Open your browser and navigate to `http://localhost:5891`.
+
+3.  **Stop the Application:**
+    In the terminal, press `Ctrl+C`, then run the following command to clean up the containers:
+    ```bash
+    docker-compose down
+    ```
+
+### Option 2: Run Natively
+
+1.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2.  **Start the Server:**
+    ```bash
+    python web_app.py
+    ```
+
+3.  **Access the Application:**
+    Open your browser and navigate to `http://localhost:5891`.
 
 
+# Advanced Usage (CLI & Library)
 
-# install
+## Installation
 ```bash
 pip install blind-watermark
 ```
 
-For the current developer version:
-```bach
-git clone git@github.com:guofei9987/blind_watermark.git
-cd blind_watermark
-pip install .
-```
-
-# How to use
-
-
-## Use in bash
-
-
+## Usage as a CLI Tool
 ```bash
-# embed watermark into image:
+# Embed watermark into an image:
 blind_watermark --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
-# extract watermark from image:
+
+# Extract watermark from an image:
 blind_watermark --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
 ```
 
+## Usage as a Python Library
+See the [examples directory](/examples/) for more details.
 
-
-## Use in Python
-
-Original Image + Watermark = Watermarked Image
-
-![origin_image](docs/原图.jpeg) + '@guofei9987 开源万岁！' = ![打上水印的图](docs/打上水印的图.jpg)
-
-
-See the [codes](/examples/example_str.py)
-
-Embed watermark:
+**Example: Text Watermark**
 ```python
 from blind_watermark import WaterMark
 
-bwm1 = WaterMark(password_img=1, password_wm=1)
-bwm1.read_img('pic/ori_img.jpg')
-wm = '@guofei9987 开源万岁！'
-bwm1.read_wm(wm, mode='str')
-bwm1.embed('output/embedded.png')
-len_wm = len(bwm1.wm_bit)
-print('Put down the length of wm_bit {len_wm}'.format(len_wm=len_wm))
+bwm = WaterMark(password_img=1, password_wm=1)
+bwm.read_img('pic/ori_img.jpg')
+bwm.read_wm('Hello World', mode='str')
+bwm.embed('output/embedded.png')
+
+# To extract, you need the length of the watermark bit string
+len_wm = len(bwm.wm_bit)
+print(f"Watermark length to use for extraction: {len_wm}")
+
+wm_extract = bwm.extract('output/embedded.png', wm_shape=len_wm, mode='str')
+print(f"Extracted watermark: {wm_extract}")
 ```
 
-Extract watermark:
-```python
-bwm1 = WaterMark(password_img=1, password_wm=1)
-wm_extract = bwm1.extract('output/embedded.png', wm_shape=len_wm, mode='str')
-print(wm_extract)
-```
-Output:
->@guofei9987 开源万岁！
-
-### attacks on Watermarked Image
-
-
-|attack method|image after attack|extracted watermark|
-|--|--|--|
-|Rotate 45 Degrees|![旋转攻击](docs/旋转攻击.jpg)|'@guofei9987 开源万岁！'|
-|Random crop|![截屏攻击](docs/截屏攻击2_还原.jpg)|'@guofei9987 开源万岁！'|
-|Masks| ![多遮挡攻击](docs/多遮挡攻击.jpg) |'@guofei9987 开源万岁！'|
-|Vertical cut|![横向裁剪攻击](docs/横向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
-|Horizontal cut|![纵向裁剪攻击](docs/纵向裁剪攻击_填补.jpg)|'@guofei9987 开源万岁！'|
-|Resize|![缩放攻击](docs/缩放攻击.jpg)|'@guofei9987 开源万岁！'|
-|Pepper Noise|![椒盐攻击](docs/椒盐攻击.jpg)|'@guofei9987 开源万岁！'|
-|Brightness 10% Down|![亮度攻击](docs/亮度攻击.jpg)|'@guofei9987 开源万岁！'|
-
-
-
-
-
-
-### embed images
-
-embed watermark:
+**Example: Image Watermark**
 ```python
 from blind_watermark import WaterMark
 
-bwm1 = WaterMark(password_wm=1, password_img=1)
-# read original image
-bwm1.read_img('pic/ori_img.jpg')
-# read watermark
-bwm1.read_wm('pic/watermark.png')
-# embed
-bwm1.embed('output/embedded.png')
+bwm = WaterMark(password_img=1, password_wm=1)
+bwm.read_img('pic/ori_img.jpg')
+bwm.read_wm('pic/watermark.png', mode='img') # Use a watermark image
+bwm.embed('output/embedded_with_img_wm.png')
+
+# To extract, you need the shape of the watermark image (height, width)
+wm_shape = (128, 128) # Example shape
+bwm.extract('output/embedded_with_img_wm.png', wm_shape=wm_shape, out_wm_name='output/extracted_wm.png', mode='img')
 ```
-
-
-Extract watermark:
-```python
-bwm1 = WaterMark(password_wm=1, password_img=1)
-# notice that wm_shape is necessary
-bwm1.extract(filename='output/embedded.png', wm_shape=(128, 128), out_wm_name='output/extracted.png', )
-```
-
-
-|attack method|image after attack|extracted watermark|
-|--|--|--|
-|Rotate 45 Degrees|![旋转攻击](docs/旋转攻击.jpg)|![](docs/旋转攻击_提取水印.png)|
-|Random crop|![截屏攻击](docs/截屏攻击2_还原.jpg)|![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-|Mask| ![多遮挡攻击](docs/多遮挡攻击.jpg) |![多遮挡_提取水印](docs/多遮挡攻击_提取水印.png)|
-
-
-### embed array of bits
-
-See it [here](/examples/example_bit.py)
-
-
-As demo, we embed 6 bytes data:
-```python
-wm = [True, False, True, True, True, False]
-```
-
-Embed:
-```python
-from blind_watermark import WaterMark
-
-bwm1 = WaterMark(password_img=1, password_wm=1)
-bwm1.read_ori_img('pic/ori_img.jpg')
-bwm1.read_wm([True, False, True, True, True, False], mode='bit')
-bwm1.embed('output/embedded.png')
-```
-
-Extract:
-```python
-bwm1 = WaterMark(password_img=1, password_wm=1, wm_shape=6)
-wm_extract = bwm1.extract('output/打上水印的图.png', mode='bit')
-print(wm_extract)
-```
-Notice that `wm_shape` (shape of watermark) is necessary
-
-The output `wm_extract` is an array of float. set a threshold such as 0.5.
-
-
-# Concurrency
-
-```python
-WaterMark(..., processes=None)
-```
-- `processes` number of processes, can be integer. Default `None`, which means using all processes.  
-
-## Related Project
-
-- text_blind_watermark (Embed message into text): [https://github.com/guofei9987/text_blind_watermark](https://github.com/guofei9987/text_blind_watermark)  
-- HideInfo（hide as image, hide as sounds, hide as text）：[https://github.com/guofei9987/HideInfo](https://github.com/guofei9987/HideInfo)

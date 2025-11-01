@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+blind_watermark/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+
+# IDE / Editor
+.idea/
+.vscode/
+
+# Uploads folder
+uploads/
+
+# OS-specific
+.DS_Store
