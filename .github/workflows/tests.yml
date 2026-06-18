@@ -26,6 +26,7 @@ jobs:
           python examples/example_no_writing.py
           python examples/example_str.py
           python examples/example_str_multi.py
+          python -m unittest discover -s tests
       #        pytest --cov .
 #      - name: Upload coverage reports to Codecov with GitHub Action
 #        uses: codecov/codecov-action@v3

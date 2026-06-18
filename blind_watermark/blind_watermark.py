@@ -11,6 +11,14 @@ from .bwm_core import WaterMarkCore
 from .version import bw_notes
 
 
+def _bits_to_text(bits):
+    byte = ''.join(str((i >= 0.5) * 1) for i in bits)
+    hex_str = hex(int(byte, base=2))[2:]
+    if len(hex_str) % 2:
+        hex_str = '0' + hex_str
+    return bytes.fromhex(hex_str).decode('utf-8', errors='replace')
+
+
 class WaterMark:
     def __init__(self, password_wm=1, password_img=1, block_shape=(4, 4), mode='common', processes=None):
         bw_notes.print_notes()
@@ -102,7 +110,6 @@ class WaterMark:
             wm = 255 * wm.reshape(wm_shape[0], wm_shape[1])
             cv2.imwrite(out_wm_name, wm)
         elif mode == 'str':
-            byte = ''.join(str((i >= 0.5) * 1) for i in wm)
-            wm = bytes.fromhex(hex(int(byte, base=2))[2:]).decode('utf-8', errors='replace')
+            wm = _bits_to_text(wm)
 
         return wm
