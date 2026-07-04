@@ -36,13 +36,26 @@ pip install .
 
 ## 命令行中使用
 
+支持子命令模式，且新增了自动化密码生成及元数据管理功能：
+
 ```bash
 # 嵌入水印：
-blind_watermark --embed --pwd 1234 examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
+bwm embed examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png
+# 程序会自动生成一个同名的 .json 格式元数据文件（包含密码及水印长度）保存到对应文件夹
+
 # 提取水印：
-blind_watermark --extract --pwd 1234 --wm_shape 111 examples/output/embedded.png
+bwm extract examples/output/embedded.png
+# 自动读取并应用相同路径下的同名 .json 元数据文件进行提取
 ```
 
+*如果你希望手动指定密码和元数据路径，可以使用以下命令：*
+```bash
+# 手动指定密码和元数据位置进行嵌入：
+bwm embed examples/pic/ori_img.jpeg "watermark text" examples/output/embedded.png -p 1234 -m meta/my_metadata.json
+
+# 提取时指定使用对应的元数据文件：
+bwm extract examples/output/embedded.png -m meta/my_metadata.json
+```
 
 
 ## Python 中使用

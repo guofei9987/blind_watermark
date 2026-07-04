@@ -1,8 +1,13 @@
 from setuptools import setup, find_packages
 from os import path as os_path
-import blind_watermark
 
 this_directory = os_path.abspath(os_path.dirname(__file__))
+
+# Fetch version without importing numpy through blind_watermark
+version = {}
+with open(os_path.join(this_directory, "blind_watermark", "version.py")) as fp:
+    exec(fp.read(), version)
+__version__ = version["__version__"]
 
 
 # 读取文件内容
@@ -20,7 +25,7 @@ def read_requirements(filename):
 
 setup(name='blind_watermark',
       python_requires='>=3.5',
-      version=blind_watermark.__version__,
+      version=__version__,
       description='Blind Watermark in Python',
       long_description=read_file('docs/en/README.md'),
       long_description_content_type="text/markdown",
@@ -34,6 +39,7 @@ setup(name='blind_watermark',
       zip_safe=False,
       entry_points={
           'console_scripts': [
-              'blind_watermark = blind_watermark.cli_tools:main'
+              'blind_watermark = blind_watermark.cli_tools:main',
+              'bwm = blind_watermark.cli_tools:main'
           ]
       })
